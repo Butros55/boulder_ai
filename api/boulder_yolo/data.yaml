@@ -1,0 +1,15 @@
+train: ./boulder_yolo/images/train
+val: ./boulder_yolo/images/val
+test: ./boulder_yolo/images/test
+
+nc: 7
+names:
+  [
+    "Grip_Red",
+    "Grip_Blue",
+    "Grip_Yellow",
+    "Grip_Turquoise",
+    "Grip_Purpule",
+    "Grip_Orange",
+    "Grip_White",
+  ]
