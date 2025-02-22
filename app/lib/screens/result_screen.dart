@@ -1,14 +1,18 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ResultScreen extends StatelessWidget {
+  // Erwartet eine Map, die "original_image", "filtered_image", "detection_image" und "detections" enthält.
   final Map<String, dynamic> processedResult;
 
-  const ResultScreen({super.key, required this.processedResult});
+  const ResultScreen({Key? key, required this.processedResult})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Dekodiere die drei Bilder
     Uint8List origBytes;
     Uint8List filtBytes;
     Uint8List detectBytes;
@@ -23,13 +27,14 @@ class ResultScreen extends StatelessWidget {
       detectBytes = base64Decode(detectBase64);
     } catch (e) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Verarbeitetes Bild')),
+        appBar: AppBar(title: const Text('Ergebnisse')),
         body: Center(child: Text('Fehler beim Dekodieren der Bilder: $e')),
       );
     }
 
-    final detections = processedResult["detections"];
-    String jsonString = const JsonEncoder.withIndent('  ').convert(detections);
+    String jsonString = const JsonEncoder.withIndent(
+      '  ',
+    ).convert(processedResult["detections"]);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Boulder AI Ergebnisse')),
@@ -40,17 +45,17 @@ class ResultScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildImageContainer(origBytes, 'Original'),
+                _buildImageContainer(context, origBytes, 'Original'),
                 const SizedBox(width: 16),
-                _buildImageContainer(filtBytes, 'Farbfilter'),
+                _buildImageContainer(context, filtBytes, 'Farbfilter'),
                 const SizedBox(width: 16),
-                _buildImageContainer(detectBytes, 'KI-Detektion'),
+                _buildImageContainer(context, detectBytes, 'KI-Detektion'),
               ],
             ),
             const SizedBox(height: 20),
             Text(
-              'Erkannte Griffe (YOLO-Detektionen):',
-              style: Theme.of(context).textTheme.headlineSmall,
+              'Erkannte Griff-Daten:',
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 10),
             Container(
@@ -71,21 +76,48 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildImageContainer(Uint8List bytes, String label) {
-    return Column(
-      children: [
-        Container(
-          width: 300,
-          height: 350,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey, width: 2),
-            borderRadius: BorderRadius.circular(8),
+  // Hilfsfunktion, die ein Bild in einem Container anzeigt und beim Tippen vergrößert
+  Widget _buildImageContainer(
+    BuildContext context,
+    Uint8List bytes,
+    String label,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              insetPadding: const EdgeInsets.all(16.0),
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: PhotoView(
+                  imageProvider: MemoryImage(bytes),
+                  minScale: PhotoViewComputedScale.contained,
+                  maxScale: PhotoViewComputedScale.covered * 3.0,
+                  backgroundDecoration: BoxDecoration(color: Colors.white),
+                ),
+              ),
+            );
+          },
+        );
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 250,
+            height: 350,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Image.memory(bytes, fit: BoxFit.contain),
           ),
-          child: Image.memory(bytes, fit: BoxFit.contain),
-        ),
-        const SizedBox(height: 8),
-        Text(label),
-      ],
+          const SizedBox(height: 8),
+          Text(label),
+        ],
+      ),
     );
   }
 }
