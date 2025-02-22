@@ -1,6 +1,6 @@
-train: ./boulder_yolo/images/train
-val: ./boulder_yolo/images/val
-test: ./boulder_yolo/images/test
+train: ./datasets/images/train
+val: ./datasets/images/val
+test: ./datasets/images/test
 
 nc: 7
 names:
