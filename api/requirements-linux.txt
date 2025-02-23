@@ -1,0 +1,12 @@
+Flask
+Jinja2==3.0.3
+Flask-Cors
+opencv-python
+numpy
+Pillow
+ultralytics
+label-studio
+label-studio-ml
+numpy==1.23.5
+scikit-learn==1.2.2
+gunicorn

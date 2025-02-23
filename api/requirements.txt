@@ -1,6 +1,10 @@
 Flask
+Jinja2==3.0.3
 Flask-Cors
 opencv-python
 numpy
 Pillow
 ultralytics
+label-studio
+label-studio-ml
+gunicorn

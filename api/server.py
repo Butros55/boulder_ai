@@ -10,7 +10,7 @@ from ultralytics import YOLO
 app = Flask(__name__)
 CORS(app)
 
-model = YOLO('./boulder_yolo/weights/best.pt')
+model = YOLO('./weights/best.pt')
 
 COLOR_RANGES = {
     "gelb":    [(20, 100, 100), (30, 255, 255)],

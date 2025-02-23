@@ -7,8 +7,7 @@ class ResultScreen extends StatelessWidget {
   // Erwartet eine Map, die "original_image", "filtered_image", "detection_image" und "detections" enthält.
   final Map<String, dynamic> processedResult;
 
-  const ResultScreen({Key? key, required this.processedResult})
-    : super(key: key);
+  const ResultScreen({super.key, required this.processedResult});
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +88,7 @@ class ResultScreen extends StatelessWidget {
           builder: (BuildContext context) {
             return Dialog(
               insetPadding: const EdgeInsets.all(16.0),
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 height: double.infinity,
                 child: PhotoView(
