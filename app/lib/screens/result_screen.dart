@@ -46,8 +46,6 @@ class ResultScreen extends StatelessWidget {
               children: [
                 _buildImageContainer(context, origBytes, 'Original'),
                 const SizedBox(width: 16),
-                _buildImageContainer(context, filtBytes, 'Farbfilter'),
-                const SizedBox(width: 16),
                 _buildImageContainer(context, detectBytes, 'KI-Detektion'),
               ],
             ),
@@ -105,8 +103,8 @@ class ResultScreen extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 250,
-            height: 350,
+            width: 450,
+            height: 750,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey, width: 2),
               borderRadius: BorderRadius.circular(8),

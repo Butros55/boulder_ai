@@ -23,6 +23,35 @@ COLOR_RANGES = {
     "weiss":   [(0, 0, 220), (180, 40, 255)]
 }
 
+CLASS_NAMES = [
+    "black",
+    "blue",
+    "grey",
+    "orange",
+    "purple",
+    "red",
+    "turquoise",
+    "white",
+    "wood",
+    "yellow",
+]
+
+
+CLASS_COLORS = [
+    (0, 0, 0),       # black
+    (255, 0, 0),     # blue (OpenCV BGR: Blau = (255, 0, 0))
+    (128, 128, 128), # grey
+    (0, 165, 255),   # orange (BGR)
+    (128, 0, 128),   # purple
+    (0, 0, 255),     # red
+    (255, 255, 0),   # turquoise (BGR: Gelbish, passe die Werte bei Bedarf an)
+    (255, 255, 255), # white
+    (19, 69, 139),   # wood (dunkle Brauntöne – hier als Beispiel)
+    (0, 255, 255),   # yellow
+]
+
+
+
 @app.route('/process', methods=['POST'])
 def process_image():
     file = request.files['image']
@@ -65,23 +94,39 @@ def process_image():
     _, filt_buffer = cv2.imencode('.jpg', filtered_output)
     filt_base64 = base64.b64encode(filt_buffer).decode('utf-8')
 
-    results = model.predict(source=img_bgr, conf=0.5)
+    results = model.predict(source=img_bgr, conf=0.6)
     detections = []
     yolo_output = img_bgr.copy()
+
     for result in results:
         for box in result.boxes:
             cls_id = int(box.cls[0])
             conf = float(box.conf[0])
             x1, y1, x2, y2 = box.xyxy[0]
+
+            # Wähle die Farbe und den Klassennamen aus den Listen
+            color = CLASS_COLORS[cls_id % len(CLASS_COLORS)]
+            class_name = CLASS_NAMES[cls_id] if cls_id < len(CLASS_NAMES) else "unknown"
+
+            # Zeichne das Rechteck
+            cv2.rectangle(yolo_output, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+
+            # Schreibe den Klassennamen und die Konfidenz in das Bild
+            label_text = f"{class_name}: {conf:.2f}"
+            cv2.putText(yolo_output, label_text, (int(x1), int(y1)-5),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
+            # Füge die Daten auch dem detections-Dict hinzu
             detections.append({
                 "class": cls_id,
+                "class_name": class_name,
                 "confidence": conf,
                 "bbox": [float(x1), float(y1), float(x2), float(y2)]
             })
-            cv2.rectangle(yolo_output, (int(x1), int(y1)), (int(x2), int(y2)),
-                          (0, 255, 0), 2)
+
     _, yolo_buffer = cv2.imencode('.jpg', yolo_output)
     yolo_base64 = base64.b64encode(yolo_buffer).decode('utf-8')
+
 
     return jsonify({
         "original_image": orig_base64,

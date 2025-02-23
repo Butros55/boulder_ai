@@ -2,14 +2,17 @@ train: ./datasets/images/train
 val: ./datasets/images/val
 test: ./datasets/images/test
 
-nc: 7
+nc: 10
 names:
   [
-    "Grip_Red",
-    "Grip_Blue",
-    "Grip_Yellow",
-    "Grip_Turquoise",
-    "Grip_Purpule",
-    "Grip_Orange",
-    "Grip_White",
+    "black",
+    "blue",
+    "grey",
+    "orange",
+    "purple",
+    "red",
+    "turquoise",
+    "white",
+    "wood",
+    "yellow",
   ]

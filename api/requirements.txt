@@ -1,5 +1,5 @@
 Flask
-Jinja2==3.0.3
+Jinja2
 Flask-Cors
 opencv-python
 numpy
@@ -7,4 +7,4 @@ Pillow
 ultralytics
 label-studio
 label-studio-ml
-gunicorn
+scikit-learn>=1.2,<2.0
