@@ -6,6 +6,7 @@ numpy
 Pillow
 ultralytics
 label-studio-ml
+label-studio
 numpy==1.23.5
 scikit-learn==1.2.2
 gunicorn
@@ -15,3 +16,5 @@ werkzeug
 SQLAlchemy==1.4.46
 python-dotenv
 django
+redis
+rq

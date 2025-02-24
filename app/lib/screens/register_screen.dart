@@ -129,7 +129,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   controller: _usernameController,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
-                    hintText: 'Username',
+                    hintText: 'Benutzername',
                     hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
@@ -148,7 +148,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   obscureText: true,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    hintText: 'Passwort',
                     hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
@@ -167,7 +167,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   obscureText: true,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
-                    hintText: 'Confirm Password',
+                    hintText: 'Passwort bestätigen',
                     hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),

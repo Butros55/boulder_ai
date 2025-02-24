@@ -1,11 +1,12 @@
 services:
   ml_backend:
     build: ./api
+    command: label-studio-ml start yolo_backend_wsgi --host 0.0.0.0 --port ${ML_BACKEND_PORT}
     container_name: ml_backend
-    command: label-studio-ml start yolo_backend_wsgi --port ${ML_BACKEND_PORT}
     ports:
       - "${ML_BACKEND_PORT}:${ML_BACKEND_PORT}"
     env_file: .env
+
 
   server:
     build: ./api

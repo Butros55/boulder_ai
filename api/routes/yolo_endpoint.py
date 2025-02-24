@@ -1,4 +1,4 @@
-from django import db
+from extensions import db
 from flask import Blueprint, app, request, jsonify
 from flask_jwt_extended import (
     jwt_required, get_jwt_identity
@@ -55,7 +55,7 @@ CLASS_COLORS = [
 
 
 @yolo_bp.route("/process", methods=["POST"])
-@jwt_required(optional=True)
+@jwt_required(optional=False)
 def process_image():
     user_id = get_jwt_identity()
 

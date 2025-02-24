@@ -19,23 +19,43 @@ class HomeScreenState extends State<HomeScreen> {
   int _totalAnalyses = 0;
   bool _isLoading = false;
 
+  final storage = const FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
     _fetchTotalAnalyses();
   }
 
-  final storage = FlutterSecureStorage();
+  Future<void> _logout() async {
+    await storage.delete(key: 'jwt_token');
+    Navigator.pushReplacementNamed(context, '/login');
+  }
 
   Future<String?> getToken() async {
     return await storage.read(key: 'jwt_token');
   }
+
+  void _showLogoutError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          "Deine Sitzung ist abgelaufen. Bitte logge dich erneut ein.",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+}
 
   Future<void> _fetchTotalAnalyses() async {
     try {
       final token = await getToken();
       if (token == null) {
         debugPrint("Kein Token gefunden, Analysen können nicht geladen werden.");
+        _showLogoutError();
+        _logout();
         return;
       }
       final response = await http.get(
@@ -47,6 +67,10 @@ class HomeScreenState extends State<HomeScreen> {
         setState(() {
           _totalAnalyses = data['total'] as int;
         });
+      } else if (response.statusCode == 401) {
+        debugPrint("Token ungültig oder abgelaufen.");
+        _showLogoutError();
+        _logout();
       } else {
         debugPrint("Fehler beim Laden der Analysen: ${response.statusCode}");
       }
@@ -55,15 +79,14 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
   Future<void> _takePicture() async {
     try {
       final XFile? picture = await _picker.pickImage(
         source: ImageSource.camera,
       );
       if (picture != null) {
-        setState(() {
-          _isLoading = true;
-        });
+        setState(() => _isLoading = true);
         dynamic imageData;
         if (kIsWeb) {
           imageData = await picture.readAsBytes();
@@ -71,9 +94,7 @@ class HomeScreenState extends State<HomeScreen> {
           imageData = File(picture.path);
         }
         final result = await ImageProcessor.processImage(imageData);
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
         Navigator.pushNamed(
           context,
           '/result',
@@ -82,9 +103,7 @@ class HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       debugPrint('Fehler beim Aufnehmen des Fotos: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -94,9 +113,7 @@ class HomeScreenState extends State<HomeScreen> {
         source: ImageSource.gallery,
       );
       if (pickedFile != null) {
-        setState(() {
-          _isLoading = true;
-        });
+        setState(() => _isLoading = true);
         dynamic imageData;
         if (kIsWeb) {
           imageData = await pickedFile.readAsBytes();
@@ -104,9 +121,7 @@ class HomeScreenState extends State<HomeScreen> {
           imageData = File(pickedFile.path);
         }
         final result = await ImageProcessor.processImage(imageData);
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
         Navigator.pushNamed(
           context,
           '/result',
@@ -115,9 +130,7 @@ class HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       debugPrint('Fehler beim Auswählen eines Bildes: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -138,6 +151,7 @@ class HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Kopfzeile
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -149,9 +163,27 @@ class HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      CircleAvatar(
-                        backgroundColor: cardColor,
-                        child: Icon(Icons.person, color: textColor),
+                      // PopupMenuButton mit CircleAvatar als Icon
+                      PopupMenuButton<String>(
+                        icon: CircleAvatar(
+                          backgroundColor: cardColor,
+                          child: Icon(Icons.person, color: textColor),
+                        ),
+                        onSelected: (value) {
+                          if (value == 'logout') {
+                            _logout();
+                          }
+                        },
+                        color: cardColor, // Hintergrund des Popups
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'logout',
+                            child: Text(
+                              'Logout',
+                              style: TextStyle(color: textColor),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

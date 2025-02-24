@@ -2,15 +2,22 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ImageProcessor {
   static final String _serverUrl = 'http://127.0.0.1:5000/process';
+  static final storage = FlutterSecureStorage();
 
   static Future<Map<String, dynamic>> processImage(dynamic image) async {
     http.MultipartRequest request = http.MultipartRequest(
       'POST',
       Uri.parse(_serverUrl),
     );
+
+    final token = await storage.read(key: 'jwt_token');
+    if (token != null) {
+      request.headers["Authorization"] = "Bearer $token";
+    }
 
     if (kIsWeb) {
       if (image is! Uint8List) {
