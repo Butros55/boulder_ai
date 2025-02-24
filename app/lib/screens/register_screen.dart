@@ -6,11 +6,10 @@ class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  RegisterScreenState createState() => RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  // Theme-Farben analog zu HomeScreen
+class RegisterScreenState extends State<RegisterScreen> {
   final Color backgroundColor = const Color(0xFF1C1C1E);
   final Color cardColor = const Color(0xFF2C2C2E);
   final Color accentColor = const Color(0xFF7F5AF0);
@@ -85,7 +84,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Titel und Avatar
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -107,7 +105,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Text(
                 'Registriere dich und starte durch!',
                 style: TextStyle(
-                  color: textColor.withOpacity(0.8),
+                  color: textColor.withValues(alpha: 0.8),
                   fontSize: 16,
                 ),
               ),
@@ -120,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               if (_successMessage != null)
                 Text(_successMessage!, style: TextStyle(color: accentColor)),
               const SizedBox(height: 16),
-              // Username-Eingabefeld
+
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -132,13 +130,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Username',
-                    hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
+                    hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              // Password-Eingabefeld
+
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -151,13 +149,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Password',
-                    hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
+                    hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              // Confirm Password-Eingabefeld
+
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -170,13 +168,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Confirm Password',
-                    hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
+                    hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              // Registrieren-Button
+
               GestureDetector(
                 onTap: _isLoading ? null : _register,
                 child: Container(
@@ -184,7 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [accentColor.withOpacity(0.8), accentColor],
+                      colors: [accentColor.withValues(alpha: 0.8), accentColor],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -210,7 +208,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Link zum Login
+
               Center(
                 child: GestureDetector(
                   onTap: () {

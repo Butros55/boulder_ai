@@ -14,3 +14,4 @@ flask-jwt-extended
 werkzeug
 SQLAlchemy==1.4.46
 python-dotenv
+django

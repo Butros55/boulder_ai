@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   final ImagePicker _picker = ImagePicker();
   int _totalAnalyses = 0;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -34,9 +35,7 @@ class HomeScreenState extends State<HomeScreen> {
     try {
       final token = await getToken();
       if (token == null) {
-        debugPrint(
-          "Kein Token gefunden, Analysen können nicht geladen werden.",
-        );
+        debugPrint("Kein Token gefunden, Analysen können nicht geladen werden.");
         return;
       }
       final response = await http.get(
@@ -62,6 +61,9 @@ class HomeScreenState extends State<HomeScreen> {
         source: ImageSource.camera,
       );
       if (picture != null) {
+        setState(() {
+          _isLoading = true;
+        });
         dynamic imageData;
         if (kIsWeb) {
           imageData = await picture.readAsBytes();
@@ -69,6 +71,9 @@ class HomeScreenState extends State<HomeScreen> {
           imageData = File(picture.path);
         }
         final result = await ImageProcessor.processImage(imageData);
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.pushNamed(
           context,
           '/result',
@@ -77,6 +82,9 @@ class HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       debugPrint('Fehler beim Aufnehmen des Fotos: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -86,6 +94,9 @@ class HomeScreenState extends State<HomeScreen> {
         source: ImageSource.gallery,
       );
       if (pickedFile != null) {
+        setState(() {
+          _isLoading = true;
+        });
         dynamic imageData;
         if (kIsWeb) {
           imageData = await pickedFile.readAsBytes();
@@ -93,6 +104,9 @@ class HomeScreenState extends State<HomeScreen> {
           imageData = File(pickedFile.path);
         }
         final result = await ImageProcessor.processImage(imageData);
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.pushNamed(
           context,
           '/result',
@@ -101,12 +115,14 @@ class HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       debugPrint('Fehler beim Auswählen eines Bildes: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Farben / Thema anpassen
     final Color backgroundColor = const Color(0xFF1C1C1E);
     final Color cardColor = const Color(0xFF2C2C2E);
     final Color accentColor = const Color(0xFF7F5AF0);
@@ -114,92 +130,104 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Titel + evtl. Icon / Avatar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
+        children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Boulder AI',
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      CircleAvatar(
+                        backgroundColor: cardColor,
+                        child: Icon(Icons.person, color: textColor),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
                   Text(
-                    'Boulder AI',
+                    'Willkommen! \nErkenne Boulder-Griffe per Foto oder Bild-Upload.',
                     style: TextStyle(
-                      color: textColor,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                      color: textColor.withValues(alpha: 0.8),
+                      fontSize: 16,
                     ),
                   ),
-                  CircleAvatar(
-                    backgroundColor: cardColor,
-                    child: Icon(Icons.person, color: textColor),
+                  const SizedBox(height: 40),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: cardColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Dein Fortschritt',
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Bisher $_totalAnalyses Boulder analysiert',
+                          style: TextStyle(
+                            color: textColor.withValues(alpha: 0.7),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildOptionButton(
+                        label: 'Foto aufnehmen',
+                        icon: Icons.camera_alt_rounded,
+                        onTap: _takePicture,
+                        accentColor: accentColor,
+                        textColor: textColor,
+                      ),
+                      _buildOptionButton(
+                        label: 'Bild hochladen',
+                        icon: Icons.photo_library_rounded,
+                        onTap: _pickImage,
+                        accentColor: accentColor,
+                        textColor: textColor,
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              // Untertitel oder kurze Beschreibung
-              Text(
-                'Willkommen! \nErkenne Boulder-Griffe per Foto oder Bild-Upload.',
-                style: TextStyle(
-                  color: textColor.withOpacity(0.8),
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 40),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: cardColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Dein Fortschritt',
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Bisher $_totalAnalyses Boulder analysiert',
-                      style: TextStyle(
-                        color: textColor.withOpacity(0.7),
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 40),
-              // Buttons zum Aufnehmen / Hochladen
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildOptionButton(
-                    label: 'Foto aufnehmen',
-                    icon: Icons.camera_alt_rounded,
-                    onTap: _takePicture,
-                    accentColor: accentColor,
-                    textColor: textColor,
-                  ),
-                  _buildOptionButton(
-                    label: 'Bild hochladen',
-                    icon: Icons.photo_library_rounded,
-                    onTap: _pickImage,
-                    accentColor: accentColor,
-                    textColor: textColor,
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
+          if (_isLoading)
+            ModalBarrier(
+              dismissible: false,
+              color: Colors.black.withValues(alpha: 0.5),
+            ),
+          if (_isLoading)
+            Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(accentColor),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -219,7 +247,7 @@ class HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [accentColor.withOpacity(0.8), accentColor],
+              colors: [accentColor.withValues(alpha: 0.8), accentColor],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),

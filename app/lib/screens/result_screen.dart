@@ -104,86 +104,90 @@ class ResultScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Analyse abgeschlossen!',
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              Center(
+                child: Text(
+                  'Analyse abgeschlossen!',
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                'Hier sind deine Bilder und die erkannten Griffe:',
-                style: TextStyle(
-                  color: textColor.withValues(alpha: 0.8),
-                  fontSize: 14,
+              Center(
+                child: Text(
+                  'Hier sind deine Bilder und die erkannten Griffe:',
+                  style: TextStyle(
+                    color: textColor.withValues(alpha: 0.8),
+                    fontSize: 14,
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
 
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center, // <-- Hinzugefügt
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        _showImageGallery(
-                          context,
-                          [origBytes, detectBytes],
-                          0,
-                          backgroundColor,
-                          textColor,
-                        );
-                      },
-                      child: _buildImageCard(
-                        label: 'Original',
-                        imageBytes: origBytes,
-                        cardColor: cardColor,
-                        textColor: textColor,
-                      ),
+                  GestureDetector(
+                    onTap: () {
+                      _showImageGallery(
+                        context,
+                        [origBytes, detectBytes],
+                        0,
+                        backgroundColor,
+                        textColor,
+                      );
+                    },
+                    child: _buildImageCard(
+                      label: 'Original',
+                      imageBytes: origBytes,
+                      cardColor: cardColor,
+                      textColor: textColor,
                     ),
                   ),
                   const SizedBox(width: 16),
-                  // KI-Detektion (klickbar)
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        _showImageGallery(
-                          context,
-                          [origBytes, detectBytes],
-                          1,
-                          backgroundColor,
-                          textColor,
-                        );
-                      },
-                      child: _buildImageCard(
-                        label: 'KI-Detektion',
-                        imageBytes: detectBytes,
-                        cardColor: cardColor,
-                        textColor: textColor,
-                      ),
+                  GestureDetector(
+                    onTap: () {
+                      _showImageGallery(
+                        context,
+                        [origBytes, detectBytes],
+                        1,
+                        backgroundColor,
+                        textColor,
+                      );
+                    },
+                    child: _buildImageCard(
+                      label: 'KI-Detektion',
+                      imageBytes: detectBytes,
+                      cardColor: cardColor,
+                      textColor: textColor,
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 24),
 
-              Text(
-                'Zusammenfassung der erkannten Griffe',
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: 30),
+              Center(
+                child: Text(
+                  'Zusammenfassung der erkannten Griffe',
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                'Durchschnittliche Confidence (alle): ${globalAvg.toStringAsFixed(2)}',
-                style: TextStyle(
-                  color: textColor.withValues(alpha: 0.9),
-                  fontSize: 14,
+              Center(
+                child: Text(
+                  'Durchschnittliche Confidence (alle): ${globalAvg.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    color: textColor.withValues(alpha: 0.9),
+                    fontSize: 14,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -195,58 +199,51 @@ class ResultScreen extends StatelessWidget {
                   color: cardColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child:
-                    classEntries.isEmpty
-                        ? Text(
-                          'Keine Griffe erkannt.',
-                          style: TextStyle(color: textColor),
-                        )
-                        : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:
-                              classEntries.map((entry) {
-                                final clsId = entry.key;
-                                final cStats = entry.value;
-                                final avgConf = cStats.sumConf / cStats.count;
+                child: classEntries.isEmpty
+                    ? Text(
+                        'Keine Griffe erkannt.',
+                        style: TextStyle(color: textColor),
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: classEntries.map((entry) {
+                          final clsId = entry.key;
+                          final cStats = entry.value;
+                          final avgConf = cStats.sumConf / cStats.count;
 
-                                final String name =
-                                    (clsId < classNames.length)
-                                        ? classNames[clsId]
-                                        : 'Unbekannt #$clsId';
-                                final Color labelColor =
-                                    classColorMap[name] ?? Colors.white70;
+                          final String name = (clsId < classNames.length)
+                              ? classNames[clsId]
+                              : 'Unbekannt #$clsId';
+                          final Color labelColor =
+                              classColorMap[name] ?? Colors.white70;
 
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 4.0,
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  margin: const EdgeInsets.only(right: 8),
+                                  decoration: BoxDecoration(
+                                    color: labelColor,
+                                    borderRadius: BorderRadius.circular(4),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 16,
-                                        height: 16,
-                                        margin: const EdgeInsets.only(right: 8),
-                                        decoration: BoxDecoration(
-                                          color: labelColor,
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          '$name: ${cStats.count}x   Ø Conf: ${avgConf.toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                            color: textColor,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '$name: ${cStats.count}x   Ø Conf: ${avgConf.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      color: textColor,
+                                      fontSize: 14,
+                                    ),
                                   ),
-                                );
-                              }).toList(),
-                        ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
               ),
             ],
           ),
@@ -265,13 +262,12 @@ class ResultScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (_) => ImageGalleryScreen(
-              images: images,
-              initialIndex: initialIndex,
-              backgroundColor: backgroundColor,
-              textColor: textColor,
-            ),
+        builder: (_) => ImageGalleryScreen(
+          images: images,
+          initialIndex: initialIndex,
+          backgroundColor: backgroundColor,
+          textColor: textColor,
+        ),
       ),
     );
   }
@@ -300,14 +296,19 @@ class ResultScreen extends StatelessWidget {
               ),
             ),
           ),
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(12),
-              bottomRight: Radius.circular(12),
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 800,
             ),
-            child: AspectRatio(
-              aspectRatio: 9 / 15,
-              child: Image.memory(imageBytes, fit: BoxFit.cover),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12),
+              ),
+              child: Image.memory(
+                imageBytes,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
         ],

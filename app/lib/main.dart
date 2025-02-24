@@ -6,11 +6,11 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const BoulderAi());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BoulderAi extends StatelessWidget {
+  const BoulderAi({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -40,10 +40,10 @@ class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
 
   @override
-  _AuthWrapperState createState() => _AuthWrapperState();
+  AuthWrapperState createState() => AuthWrapperState();
 }
 
-class _AuthWrapperState extends State<AuthWrapper> {
+class AuthWrapperState extends State<AuthWrapper> {
   final storage = const FlutterSecureStorage();
   String? _jwtToken;
   bool _isLoading = true;

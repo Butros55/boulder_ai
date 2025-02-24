@@ -7,11 +7,10 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  // Theme-Farben analog zu HomeScreen
+class LoginScreenState extends State<LoginScreen> {
   final Color backgroundColor = const Color(0xFF1C1C1E);
   final Color cardColor = const Color(0xFF2C2C2E);
   final Color accentColor = const Color(0xFF7F5AF0);
@@ -40,9 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final token = data["access_token"];
-        // Token sicher speichern
         await storage.write(key: 'jwt_token', value: token);
-        // Nach erfolgreichem Login zur HomeScreen navigieren
         Navigator.pushReplacementNamed(context, '/');
       } else {
         final data = jsonDecode(response.body);
@@ -77,7 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Titel und Avatar
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -99,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 'Willkommen zurück!\nBitte logge dich ein.',
                 style: TextStyle(
-                  color: textColor.withOpacity(0.8),
+                  color: textColor.withValues(alpha: 0.8),
                   fontSize: 16,
                 ),
               ),
@@ -110,7 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: const TextStyle(color: Colors.redAccent),
                 ),
               const SizedBox(height: 16),
-              // Username-Eingabefeld
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -122,13 +117,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Username',
-                    hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
+                    hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
                 ),
               ),
+              
               const SizedBox(height: 16),
-              // Password-Eingabefeld
+
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -141,13 +137,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Password',
-                    hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
+                    hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              // Login-Button
+
               GestureDetector(
                 onTap: _isLoading ? null : _login,
                 child: Container(
@@ -155,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [accentColor.withOpacity(0.8), accentColor],
+                      colors: [accentColor.withValues(alpha: 0.8), accentColor],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -181,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Link zur Registrierungsseite
+
               Center(
                 child: GestureDetector(
                   onTap: () {
