@@ -1,139 +1,31 @@
-from flask import Flask, request, jsonify
+# server.py
+import os
+from flask import Flask
 from flask_cors import CORS
-import cv2
-import numpy as np
-import io
-from PIL import Image
-import base64
-from ultralytics import YOLO
+from dotenv import load_dotenv
+from extensions import db, jwt
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-model = YOLO('./weights/best.pt')
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-COLOR_RANGES = {
-    "gelb":    [(20, 100, 100), (30, 255, 255)],
-    "tuerkis": [(80, 100, 100), (95, 255, 255)],
-    "lila":    [(140, 100, 100), (160, 255, 255)],
-    "rot1":    [(0, 120, 70), (10, 255, 255)],
-    "rot2":    [(170, 120, 70), (180, 255, 255)],
-    "blau":    [(100, 100, 70), (130, 255, 255)],
-    "orange":  [(10, 100, 100), (20, 255, 255)],
-    "weiss":   [(0, 0, 220), (180, 40, 255)]
-}
+db.init_app(app)
+jwt.init_app(app)
 
-CLASS_NAMES = [
-    "black",
-    "blue",
-    "grey",
-    "orange",
-    "purple",
-    "red",
-    "turquoise",
-    "white",
-    "wood",
-    "yellow",
-]
+from routes.auth import auth_bp
+from routes.analysis import analysis_bp
+from routes.yolo_endpoint import yolo_bp
 
-
-CLASS_COLORS = [
-    (0, 0, 0),       # black
-    (255, 0, 0),     # blue (OpenCV BGR: Blau = (255, 0, 0))
-    (128, 128, 128), # grey
-    (0, 165, 255),   # orange (BGR)
-    (128, 0, 128),   # purple
-    (0, 0, 255),     # red
-    (255, 255, 0),   # turquoise (BGR: Gelbish, passe die Werte bei Bedarf an)
-    (255, 255, 255), # white
-    (19, 69, 139),   # wood (dunkle Brauntöne – hier als Beispiel)
-    (0, 255, 255),   # yellow
-]
-
-
-
-@app.route('/process', methods=['POST'])
-def process_image():
-    file = request.files['image']
-    in_memory_file = io.BytesIO(file.read())
-    img = np.array(Image.open(in_memory_file))
-
-    if img.shape[2] == 3:
-        img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    else:
-        img_bgr = img
-
-    _, orig_buffer = cv2.imencode('.jpg', img_bgr)
-    orig_base64 = base64.b64encode(orig_buffer).decode('utf-8')
-
-    hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
-    filtered_output = np.zeros_like(img_bgr)
-    for color, ranges in COLOR_RANGES.items():
-        if color == "rot1":
-            lower1 = np.array(COLOR_RANGES["rot1"][0], dtype=np.uint8)
-            upper1 = np.array(COLOR_RANGES["rot1"][1], dtype=np.uint8)
-            mask1 = cv2.inRange(hsv, lower1, upper1)
-            lower2 = np.array(COLOR_RANGES["rot2"][0], dtype=np.uint8)
-            upper2 = np.array(COLOR_RANGES["rot2"][1], dtype=np.uint8)
-            mask2 = cv2.inRange(hsv, lower2, upper2)
-            mask = mask1 | mask2
-        elif color == "rot2":
-            continue
-        else:
-            lower = np.array(ranges[0], dtype=np.uint8)
-            upper = np.array(ranges[1], dtype=np.uint8)
-            mask = cv2.inRange(hsv, lower, upper)
-        
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        mask = cv2.erode(mask, kernel, iterations=1)
-        mask = cv2.dilate(mask, kernel, iterations=2)
-        
-        color_segment = cv2.bitwise_and(img_bgr, img_bgr, mask=mask)
-        filtered_output = cv2.add(filtered_output, color_segment)
-    
-    _, filt_buffer = cv2.imencode('.jpg', filtered_output)
-    filt_base64 = base64.b64encode(filt_buffer).decode('utf-8')
-
-    results = model.predict(source=img_bgr, conf=0.6)
-    detections = []
-    yolo_output = img_bgr.copy()
-
-    for result in results:
-        for box in result.boxes:
-            cls_id = int(box.cls[0])
-            conf = float(box.conf[0])
-            x1, y1, x2, y2 = box.xyxy[0]
-
-            # Wähle die Farbe und den Klassennamen aus den Listen
-            color = CLASS_COLORS[cls_id % len(CLASS_COLORS)]
-            class_name = CLASS_NAMES[cls_id] if cls_id < len(CLASS_NAMES) else "unknown"
-
-            # Zeichne das Rechteck
-            cv2.rectangle(yolo_output, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
-
-            # Schreibe den Klassennamen und die Konfidenz in das Bild
-            label_text = f"{class_name}: {conf:.2f}"
-            cv2.putText(yolo_output, label_text, (int(x1), int(y1)-5),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-
-            # Füge die Daten auch dem detections-Dict hinzu
-            detections.append({
-                "class": cls_id,
-                "class_name": class_name,
-                "confidence": conf,
-                "bbox": [float(x1), float(y1), float(x2), float(y2)]
-            })
-
-    _, yolo_buffer = cv2.imencode('.jpg', yolo_output)
-    yolo_base64 = base64.b64encode(yolo_buffer).decode('utf-8')
-
-
-    return jsonify({
-        "original_image": orig_base64,
-        "filtered_image": filt_base64,
-        "detection_image": yolo_base64,
-        "detections": detections
-    })
+app.register_blueprint(auth_bp)
+app.register_blueprint(analysis_bp)
+app.register_blueprint(yolo_bp)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    with app.app_context():
+        db.create_all()
+    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)

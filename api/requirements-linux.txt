@@ -9,3 +9,8 @@ label-studio-ml
 numpy==1.23.5
 scikit-learn==1.2.2
 gunicorn
+flask-sqlalchemy
+flask-jwt-extended
+werkzeug
+SQLAlchemy==1.4.46
+python-dotenv
