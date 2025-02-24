@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'screens/home_screen.dart';
 import 'screens/result_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +20,10 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/': (context) => const AuthWrapper(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/home': (context) => const HomeScreen(),
         '/result': (context) {
           final args = ModalRoute.of(context)?.settings.arguments;
           if (args == null || args is! Map<String, dynamic>) {
@@ -27,5 +33,44 @@ class MyApp extends StatelessWidget {
         },
       },
     );
+  }
+}
+
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  _AuthWrapperState createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  final storage = const FlutterSecureStorage();
+  String? _jwtToken;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkToken();
+  }
+
+  Future<void> _checkToken() async {
+    final token = await storage.read(key: 'jwt_token');
+    setState(() {
+      _jwtToken = token;
+      _isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_jwtToken != null) {
+      return const HomeScreen();
+    } else {
+      return const LoginScreen();
+    }
   }
 }

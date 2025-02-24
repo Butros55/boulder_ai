@@ -5,6 +5,9 @@ opencv-python
 numpy
 Pillow
 ultralytics
-label-studio
-label-studio-ml
 scikit-learn>=1.2,<2.0
+flask-sqlalchemy
+flask-jwt-extended
+werkzeug
+SQLAlchemy==1.4.46
+python-dotenv

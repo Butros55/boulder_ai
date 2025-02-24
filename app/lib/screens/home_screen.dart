@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:boulder_ai/util/image_processor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +16,45 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   final ImagePicker _picker = ImagePicker();
+  int _totalAnalyses = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTotalAnalyses();
+  }
+
+  final storage = FlutterSecureStorage();
+
+  Future<String?> getToken() async {
+    return await storage.read(key: 'jwt_token');
+  }
+
+  Future<void> _fetchTotalAnalyses() async {
+    try {
+      final token = await getToken();
+      if (token == null) {
+        debugPrint(
+          "Kein Token gefunden, Analysen können nicht geladen werden.",
+        );
+        return;
+      }
+      final response = await http.get(
+        Uri.parse("http://127.0.0.1:5000/analyses"),
+        headers: {"Authorization": "Bearer $token"},
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _totalAnalyses = data['total'] as int;
+        });
+      } else {
+        debugPrint("Fehler beim Laden der Analysen: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Fehler beim Abrufen der Analysen: $e");
+    }
+  }
 
   Future<void> _takePicture() async {
     try {
@@ -27,8 +69,11 @@ class HomeScreenState extends State<HomeScreen> {
           imageData = File(picture.path);
         }
         final result = await ImageProcessor.processImage(imageData);
-        if (!mounted) return;
-        Navigator.pushNamed(context, '/result', arguments: result);
+        Navigator.pushNamed(
+          context,
+          '/result',
+          arguments: result,
+        ).then((_) => _fetchTotalAnalyses());
       }
     } catch (e) {
       debugPrint('Fehler beim Aufnehmen des Fotos: $e');
@@ -48,8 +93,11 @@ class HomeScreenState extends State<HomeScreen> {
           imageData = File(pickedFile.path);
         }
         final result = await ImageProcessor.processImage(imageData);
-        if (!mounted) return;
-        Navigator.pushNamed(context, '/result', arguments: result);
+        Navigator.pushNamed(
+          context,
+          '/result',
+          arguments: result,
+        ).then((_) => _fetchTotalAnalyses());
       }
     } catch (e) {
       debugPrint('Fehler beim Auswählen eines Bildes: $e');
@@ -59,15 +107,12 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // Farben / Thema anpassen
-    final Color backgroundColor = const Color(
-      0xFF1C1C1E,
-    ); // dunkles Grau/Schwarz
-    final Color cardColor = const Color(0xFF2C2C2E); // etwas helleres Grau
-    final Color accentColor = const Color(0xFF7F5AF0); // lila / highlight
-    final Color textColor = Colors.white; // für helle Schrift
+    final Color backgroundColor = const Color(0xFF1C1C1E);
+    final Color cardColor = const Color(0xFF2C2C2E);
+    final Color accentColor = const Color(0xFF7F5AF0);
+    final Color textColor = Colors.white;
 
     return Scaffold(
-      // Wir verzichten mal auf die AppBar und machen ein custom-Design
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -87,7 +132,6 @@ class HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // Optional: Avatar oder Icon
                   CircleAvatar(
                     backgroundColor: cardColor,
                     child: Icon(Icons.person, color: textColor),
@@ -95,7 +139,6 @@ class HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 24),
-
               // Untertitel oder kurze Beschreibung
               Text(
                 'Willkommen! \nErkenne Boulder-Griffe per Foto oder Bild-Upload.',
@@ -105,9 +148,6 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-
-              // Beispiel für Statistiken oder "Karten"
-              // (könntest du später mit Graphen / Stats befüllen)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -127,7 +167,7 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Bisher 0 Boulder analysiert',
+                      'Bisher $_totalAnalyses Boulder analysiert',
                       style: TextStyle(
                         color: textColor.withOpacity(0.7),
                         fontSize: 14,
@@ -136,11 +176,8 @@ class HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 40),
-
-              // Buttons
-              // => Anstelle normaler ElevatedButton => custom styles
+              // Buttons zum Aufnehmen / Hochladen
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
