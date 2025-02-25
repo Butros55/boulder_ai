@@ -9,7 +9,7 @@ import io
 from PIL import Image
 import base64
 from ultralytics import YOLO
-from models import Analysis
+from models.models import Analysis
 
 
 model = YOLO('./weights/best.pt')
@@ -72,34 +72,6 @@ def process_image():
     _, orig_buffer = cv2.imencode('.jpg', img_bgr)
     orig_base64 = base64.b64encode(orig_buffer).decode('utf-8')
 
-    hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
-    filtered_output = np.zeros_like(img_bgr)
-    for color, ranges in COLOR_RANGES.items():
-        if color == "rot1":
-            lower1 = np.array(COLOR_RANGES["rot1"][0], dtype=np.uint8)
-            upper1 = np.array(COLOR_RANGES["rot1"][1], dtype=np.uint8)
-            mask1 = cv2.inRange(hsv, lower1, upper1)
-            lower2 = np.array(COLOR_RANGES["rot2"][0], dtype=np.uint8)
-            upper2 = np.array(COLOR_RANGES["rot2"][1], dtype=np.uint8)
-            mask2 = cv2.inRange(hsv, lower2, upper2)
-            mask = mask1 | mask2
-        elif color == "rot2":
-            continue
-        else:
-            lower = np.array(ranges[0], dtype=np.uint8)
-            upper = np.array(ranges[1], dtype=np.uint8)
-            mask = cv2.inRange(hsv, lower, upper)
-        
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        mask = cv2.erode(mask, kernel, iterations=1)
-        mask = cv2.dilate(mask, kernel, iterations=2)
-        
-        color_segment = cv2.bitwise_and(img_bgr, img_bgr, mask=mask)
-        filtered_output = cv2.add(filtered_output, color_segment)
-    
-    _, filt_buffer = cv2.imencode('.jpg', filtered_output)
-    filt_base64 = base64.b64encode(filt_buffer).decode('utf-8')
-
     results = model.predict(source=img_bgr, conf=0.6)
     detections = []
     yolo_output = img_bgr.copy()
@@ -130,7 +102,6 @@ def process_image():
 
     response = {
         "original_image": orig_base64,
-        "filtered_image": filt_base64,
         "detection_image": yolo_base64,
         "detections": detections
     }
