@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:boulder_ai/util/image_gallery.dart';
+import 'package:boulder_ai/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -12,6 +13,7 @@ class ResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final storage = const FlutterSecureStorage();
+    const double distanceThreshold = 320.0;
 
     // FutureBuilder, der prüft, ob ein gültiges Token existiert.
     return FutureBuilder<String?>(
@@ -104,6 +106,11 @@ class ResultScreen extends StatelessWidget {
         }
 
         final List<dynamic> detections = processedResult["detections"] ?? [];
+        List<List<Grip>> detectedRoutes = groupGripsIntoRoutes(detections, distanceThreshold);
+        final int originalWidth = processedResult["image_width"];
+        final int originalHeight = processedResult["image_height"];
+
+
 
         final Map<int, _ClassStats> stats = {};
         for (var det in detections) {
@@ -184,21 +191,50 @@ class ResultScreen extends StatelessWidget {
                             textColor: textColor,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            _showImageGallery(
-                              context,
-                              [origBytes, detectBytes],
-                              1,
-                              backgroundColor,
-                              textColor,
-                            );
-                          },
-                          child: _buildImageCard(
-                            label: 'KI-Detektion',
-                            imageBytes: detectBytes,
-                            cardColor: cardColor,
-                            textColor: textColor,
+                        // Hier der ersetzte KI-Detektion-Bereich mit DetectionOverlay:
+                        Container(
+                          decoration: BoxDecoration(
+                            color: cardColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'KI-Detektion',
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 500,
+                                child: AspectRatio(
+                                  aspectRatio: originalWidth / originalHeight,
+                                  child: DetectionOverlay(
+                                    imageBytes: origBytes, // oder detectBytes, falls du es bevorzugst
+                                    detections: detections,
+                                    originalWidth: originalWidth.toDouble(),
+                                    originalHeight: originalHeight.toDouble(),
+                                    classColorMap: {
+                                      0: Colors.black,
+                                      1: Colors.blue,
+                                      2: Colors.grey,
+                                      3: Colors.orange,
+                                      4: Colors.purple,
+                                      5: Colors.red,
+                                      6: Colors.cyan,
+                                      7: Colors.white,
+                                      8: const Color(0xFF8D6E63), // wood
+                                      9: Colors.yellow,
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -216,6 +252,51 @@ class ResultScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 30),
+                  // Neue Sektion: Erkannte Routen
+                  Center(
+                    child: Text(
+                      'Erkannte Routen',
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: cardColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: detectedRoutes.isEmpty
+                        ? Text(
+                            'Keine Route erkannt.',
+                            style: TextStyle(color: textColor),
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: detectedRoutes.asMap().entries.map((entry) {
+                              int routeIndex = entry.key;
+                              List<Grip> route = entry.value;
+                              // Hier sortieren wir die Griffe (zum Beispiel von unten nach oben)
+                              route.sort((a, b) => a.centerY.compareTo(b.centerY));
+                              // Erzeuge einen String aus den Klassen-IDs der Route
+                              String routeSummary = route.map((grip) => classNames[grip.classId]).join(' → ');
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                child: Text(
+                                  'Route ${routeIndex + 1}: (${route.length} Griffe) - $routeSummary',
+                                  style: TextStyle(color: textColor, fontSize: 14),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                  ),
+
                   const SizedBox(height: 8),
                   Center(
                     child: Text(
@@ -358,4 +439,80 @@ class _ClassStats {
   int count;
   double sumConf;
   _ClassStats({required this.count, required this.sumConf});
+}
+
+
+class DetectionOverlay extends StatelessWidget {
+  final Uint8List imageBytes;
+  final List<dynamic> detections;
+  final double originalWidth;
+  final double originalHeight;
+
+  // classColorMap: falls du pro Klasse eine andere Farbe willst
+  final Map<int, Color> classColorMap;
+
+  const DetectionOverlay({
+    Key? key,
+    required this.imageBytes,
+    required this.detections,
+    required this.originalWidth,
+    required this.originalHeight,
+    required this.classColorMap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // So skalierst du die Koordinaten auf die aktuelle Widget-Größe
+        final double scaleX = constraints.maxWidth / originalWidth;
+        final double scaleY = constraints.maxHeight / originalHeight;
+
+        return Stack(
+          children: [
+            // 1) Bild als Hintergrund
+            Image.memory(
+              imageBytes,
+              width: constraints.maxWidth,
+              height: constraints.maxHeight,
+              fit: BoxFit.cover,
+            ),
+
+            // 2) Jede Detection als Positioned
+            for (var det in detections) ...{
+              _buildBox(det, scaleX, scaleY),
+            },
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildBox(dynamic det, double scaleX, double scaleY) {
+    final bbox = det["bbox"] as List<dynamic>;
+    final double x1 = bbox[0];
+    final double y1 = bbox[1];
+    final double x2 = bbox[2];
+    final double y2 = bbox[3];
+
+    final double left = x1 * scaleX;
+    final double top = y1 * scaleY;
+    final double width = (x2 - x1) * scaleX;
+    final double height = (y2 - y1) * scaleY;
+
+    final int clsId = det["class"];
+    final Color color = classColorMap[clsId] ?? Colors.white;
+
+    return Positioned(
+      left: left,
+      top: top,
+      width: width,
+      height: height,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: color, width: 2),
+        ),
+      ),
+    );
+  }
 }

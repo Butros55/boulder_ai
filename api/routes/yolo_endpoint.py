@@ -82,17 +82,15 @@ def process_image():
             conf = float(box.conf[0])
             x1, y1, x2, y2 = box.xyxy[0]
 
-            color = CLASS_COLORS[cls_id % len(CLASS_COLORS)]
-            class_name = CLASS_NAMES[cls_id] if cls_id < len(CLASS_NAMES) else "unknown"
-
-            cv2.rectangle(yolo_output, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
-            label_text = f"{class_name}: {conf:.2f}"
-            cv2.putText(yolo_output, label_text, (int(x1), int(y1)-5),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            # color = CLASS_COLORS[cls_id % len(CLASS_COLORS)]
+            # cv2.rectangle(yolo_output, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+            # label_text = f"{class_name}: {conf:.2f}"
+            # cv2.putText(yolo_output, label_text, (int(x1), int(y1)-5),
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
             detections.append({
                 "class": cls_id,
-                "class_name": class_name,
+                "class_name": CLASS_NAMES[cls_id] if cls_id < len(CLASS_NAMES) else "unknown",
                 "confidence": conf,
                 "bbox": [float(x1), float(y1), float(x2), float(y2)]
             })
@@ -100,11 +98,16 @@ def process_image():
     _, yolo_buffer = cv2.imencode('.jpg', yolo_output)
     yolo_base64 = base64.b64encode(yolo_buffer).decode('utf-8')
 
+    height, width = img_bgr.shape[:2]
+
     response = {
         "original_image": orig_base64,
         "detection_image": yolo_base64,
-        "detections": detections
+        "detections": detections,
+        "image_width": width,   # Neu
+        "image_height": height  # Neu
     }
+
 
     if user_id is not None:
         analysis = Analysis(

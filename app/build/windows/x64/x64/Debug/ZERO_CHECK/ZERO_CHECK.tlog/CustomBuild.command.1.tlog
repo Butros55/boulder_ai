@@ -1,0 +1,10 @@
+^C:\DEV\PROJECTS\BOULDER_AI\APP\BUILD\WINDOWS\X64\CMAKEFILES\94EC53723187BA4B129E794665F531CD\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/projects/boulder_ai/app/windows -BC:/dev/projects/boulder_ai/app/build/windows/x64 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/dev/projects/boulder_ai/app/build/windows/x64/boulder_ai.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
