@@ -1,21 +1,104 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
+import 'package:boulder_ai/util/detection_overlay.dart';
 import 'package:boulder_ai/util/image_gallery.dart';
 import 'package:boulder_ai/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class ResultScreen extends StatelessWidget {
+/// Das Grip-Modell (wie vorher) berechnet den Mittelpunkt einer Detection.
+class Grip {
+  final int classId;
+  final double centerX;
+  final double centerY;
+  final Map detection; // enthält bspw. bbox, confidence etc.
+
+  Grip({
+    required this.classId,
+    required this.centerX,
+    required this.centerY,
+    required this.detection,
+  });
+}
+
+/// Gruppiert Detections in Routen mittels DFS, wie zuvor.
+List<List<Grip>> groupGripsIntoRoutes(List<dynamic> detections, double threshold) {
+  List<Grip> allGrips = [];
+  for (var d in detections) {
+    final List<dynamic> bbox = d["bbox"];
+    double x1 = bbox[0].toDouble();
+    double y1 = bbox[1].toDouble();
+    double x2 = bbox[2].toDouble();
+    double y2 = bbox[3].toDouble();
+    double centerX = (x1 + x2) / 2;
+    double centerY = (y1 + y2) / 2;
+    int classId = d["class"] ?? 0;
+    allGrips.add(Grip(
+      classId: classId,
+      centerX: centerX,
+      centerY: centerY,
+      detection: d,
+    ));
+  }
+  // Gruppiere nach Farbe (classId)
+  Map<int, List<Grip>> gripsByColor = {};
+  for (var grip in allGrips) {
+    gripsByColor.putIfAbsent(grip.classId, () => []).add(grip);
+  }
+  List<List<Grip>> routes = [];
+  for (var group in gripsByColor.values) {
+    routes.addAll(_findConnectedComponents(group, threshold));
+  }
+  return routes;
+}
+
+List<List<Grip>> _findConnectedComponents(List<Grip> grips, double threshold) {
+  List<List<Grip>> components = [];
+  Set<int> visited = {};
+  for (int i = 0; i < grips.length; i++) {
+    if (!visited.contains(i)) {
+      List<Grip> component = [];
+      _dfs(i, grips, threshold, visited, component);
+      components.add(component);
+    }
+  }
+  return components;
+}
+
+void _dfs(int index, List<Grip> grips, double threshold, Set<int> visited, List<Grip> component) {
+  visited.add(index);
+  component.add(grips[index]);
+  for (int j = 0; j < grips.length; j++) {
+    if (!visited.contains(j)) {
+      double dx = grips[index].centerX - grips[j].centerX;
+      double dy = grips[index].centerY - grips[j].centerY;
+      double distance = sqrt(dx * dx + dy * dy);
+      if (distance < threshold) {
+        _dfs(j, grips, threshold, visited, component);
+      }
+    }
+  }
+}
+
+/// INTERAKTIVER ResultScreen, der den aktuell selektierten Routenindex speichert.
+class ResultScreen extends StatefulWidget {
   final Map<String, dynamic> processedResult;
 
-  const ResultScreen({super.key, required this.processedResult});
+  const ResultScreen({Key? key, required this.processedResult}) : super(key: key);
+
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  int? selectedRouteIndex; // aktuell selektierte Route
 
   @override
   Widget build(BuildContext context) {
     final storage = const FlutterSecureStorage();
     const double distanceThreshold = 320.0;
 
-    // FutureBuilder, der prüft, ob ein gültiges Token existiert.
     return FutureBuilder<String?>(
       future: storage.read(key: 'jwt_token'),
       builder: (context, snapshot) {
@@ -25,9 +108,7 @@ class ResultScreen extends StatelessWidget {
             body: const Center(child: CircularProgressIndicator()),
           );
         }
-
         if (snapshot.data == null) {
-          // Token fehlt: SnackBar anzeigen und zum Login navigieren.
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -47,7 +128,7 @@ class ResultScreen extends StatelessWidget {
           );
         }
 
-        // Falls Token vorhanden, fahre mit der Anzeige fort.
+        // Basisfarben und Styles
         final Color backgroundColor = const Color(0xFF1C1C1E);
         final Color cardColor = const Color(0xFF2C2C2E);
         final Color textColor = Colors.white;
@@ -78,12 +159,12 @@ class ResultScreen extends StatelessWidget {
           "yellow": Colors.amberAccent,
         };
 
+        // Bilder decodieren
         Uint8List origBytes;
         Uint8List detectBytes;
         try {
-          final String origBase64 = processedResult["original_image"] as String;
-          final String detectBase64 = processedResult["detection_image"] as String;
-
+          final String origBase64 = widget.processedResult["original_image"] as String;
+          final String detectBase64 = widget.processedResult["detection_image"] as String;
           origBytes = base64Decode(origBase64);
           detectBytes = base64Decode(detectBase64);
         } catch (e) {
@@ -91,54 +172,36 @@ class ResultScreen extends StatelessWidget {
             backgroundColor: backgroundColor,
             appBar: AppBar(
               backgroundColor: backgroundColor,
-              title: Text(
-                'Boulder AI Ergebnisse',
-                style: TextStyle(color: textColor),
-              ),
+              title: Text('Boulder AI Ergebnisse', style: TextStyle(color: textColor)),
             ),
             body: Center(
-              child: Text(
-                'Fehler beim Dekodieren der Bilder: $e',
-                style: TextStyle(color: textColor),
-              ),
+              child: Text('Fehler beim Dekodieren der Bilder: $e', style: TextStyle(color: textColor)),
             ),
           );
         }
 
-        final List<dynamic> detections = processedResult["detections"] ?? [];
+        final List<dynamic> detections = widget.processedResult["detections"] ?? [];
+        // Berechne die Routen anhand der Detections
         List<List<Grip>> detectedRoutes = groupGripsIntoRoutes(detections, distanceThreshold);
-        final int originalWidth = processedResult["image_width"];
-        final int originalHeight = processedResult["image_height"];
+        final int originalWidth = widget.processedResult["image_width"];
+        final int originalHeight = widget.processedResult["image_height"];
 
-
-
-        final Map<int, _ClassStats> stats = {};
-        for (var det in detections) {
-          final int clsId = det["class"] ?? 0;
-          final double conf = (det["confidence"] ?? 0.0).toDouble();
-          stats.putIfAbsent(clsId, () => _ClassStats(count: 0, sumConf: 0.0));
-          stats[clsId]!.count++;
-          stats[clsId]!.sumConf += conf;
+        // Zusätzlich: Erstelle ein Mapping von jeder Detection (über bbox als String) zur Route
+        Map<String, int> detectionToRoute = {};
+        for (int routeIndex = 0; routeIndex < detectedRoutes.length; routeIndex++) {
+          for (var grip in detectedRoutes[routeIndex]) {
+            // Nutze bspw. den String der bbox als Key
+            detectionToRoute[grip.detection["bbox"].toString()] = routeIndex;
+          }
         }
 
-        final classEntries =
-            stats.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
-
-        double globalSum = 0.0;
-        for (var d in detections) {
-          globalSum += (d["confidence"] ?? 0.0).toDouble();
-        }
-        double globalAvg =
-            detections.isEmpty ? 0.0 : (globalSum / detections.length);
+        // (Weitere Statistiken aus den Detections ...)
 
         return Scaffold(
           backgroundColor: backgroundColor,
           appBar: AppBar(
             backgroundColor: backgroundColor,
-            title: Text(
-              'Boulder AI Ergebnisse',
-              style: TextStyle(color: textColor),
-            ),
+            title: Text('Boulder AI Ergebnisse', style: TextStyle(color: textColor)),
             iconTheme: IconThemeData(color: textColor),
           ),
           body: SafeArea(
@@ -147,6 +210,7 @@ class ResultScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Überschrift
                   Center(
                     child: Text(
                       'Analyse abgeschlossen!',
@@ -162,7 +226,7 @@ class ResultScreen extends StatelessWidget {
                     child: Text(
                       'Hier sind deine Bilder und die erkannten Griffe:',
                       style: TextStyle(
-                        color: textColor.withValues(alpha: 0.8),
+                        color: textColor.withOpacity(0.8),
                         fontSize: 14,
                       ),
                     ),
@@ -174,6 +238,7 @@ class ResultScreen extends StatelessWidget {
                       runSpacing: 16,
                       alignment: WrapAlignment.center,
                       children: [
+                        // Originalbild-Karte
                         GestureDetector(
                           onTap: () {
                             _showImageGallery(
@@ -191,7 +256,7 @@ class ResultScreen extends StatelessWidget {
                             textColor: textColor,
                           ),
                         ),
-                        // Hier der ersetzte KI-Detektion-Bereich mit DetectionOverlay:
+                        // KI-Detektion als interaktives Overlay
                         Container(
                           decoration: BoxDecoration(
                             color: cardColor,
@@ -214,8 +279,8 @@ class ResultScreen extends StatelessWidget {
                                 width: 500,
                                 child: AspectRatio(
                                   aspectRatio: originalWidth / originalHeight,
-                                  child: DetectionOverlay(
-                                    imageBytes: origBytes, // oder detectBytes, falls du es bevorzugst
+                                  child: DetectionOverlayInteractive(
+                                    imageBytes: origBytes,
                                     detections: detections,
                                     originalWidth: originalWidth.toDouble(),
                                     originalHeight: originalHeight.toDouble(),
@@ -228,8 +293,20 @@ class ResultScreen extends StatelessWidget {
                                       5: Colors.red,
                                       6: Colors.cyan,
                                       7: Colors.white,
-                                      8: const Color(0xFF8D6E63), // wood
+                                      8: const Color(0xFF8D6E63),
                                       9: Colors.yellow,
+                                    },
+                                    detectionToRoute: detectionToRoute,
+                                    selectedRouteIndex: selectedRouteIndex,
+                                    onRouteSelected: (int routeIndex) {
+                                      setState(() {
+                                        // Toggle-Auswahl: Klicke auf dieselbe Route => Auswahl aufheben
+                                        if (selectedRouteIndex == routeIndex) {
+                                          selectedRouteIndex = null;
+                                        } else {
+                                          selectedRouteIndex = routeIndex;
+                                        }
+                                      });
                                     },
                                   ),
                                 ),
@@ -240,20 +317,8 @@ class ResultScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
+                  // ... (weitere UI-Komponenten, z. B. Zusammenfassung, Routenliste etc.)
                   const SizedBox(height: 30),
-                  Center(
-                    child: Text(
-                      'Zusammenfassung der erkannten Griffe',
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  // Neue Sektion: Erkannte Routen
                   Center(
                     child: Text(
                       'Erkannte Routen',
@@ -282,9 +347,7 @@ class ResultScreen extends StatelessWidget {
                             children: detectedRoutes.asMap().entries.map((entry) {
                               int routeIndex = entry.key;
                               List<Grip> route = entry.value;
-                              // Hier sortieren wir die Griffe (zum Beispiel von unten nach oben)
                               route.sort((a, b) => a.centerY.compareTo(b.centerY));
-                              // Erzeuge einen String aus den Klassen-IDs der Route
                               String routeSummary = route.map((grip) => classNames[grip.classId]).join(' → ');
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -296,71 +359,7 @@ class ResultScreen extends StatelessWidget {
                             }).toList(),
                           ),
                   ),
-
-                  const SizedBox(height: 8),
-                  Center(
-                    child: Text(
-                      'Durchschnittliche Confidence (alle): ${globalAvg.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        color: textColor.withValues(alpha: 0.9),
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: classEntries.isEmpty
-                        ? Text(
-                            'Keine Griffe erkannt.',
-                            style: TextStyle(color: textColor),
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: classEntries.map((entry) {
-                              final clsId = entry.key;
-                              final cStats = entry.value;
-                              final avgConf = cStats.sumConf / cStats.count;
-
-                              final String name = (clsId < classNames.length)
-                                  ? classNames[clsId]
-                                  : 'Unbekannt #$clsId';
-                              final Color labelColor =
-                                  classColorMap[name] ?? Colors.white70;
-
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 16,
-                                      height: 16,
-                                      margin: const EdgeInsets.only(right: 8),
-                                      decoration: BoxDecoration(
-                                        color: labelColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        '$name: ${cStats.count}x   Ø Conf: ${avgConf.toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                          color: textColor,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                  ),
+                  // ... weitere Abschnitte
                 ],
               ),
             ),
@@ -370,13 +369,7 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  void _showImageGallery(
-    BuildContext context,
-    List<Uint8List> images,
-    int initialIndex,
-    Color backgroundColor,
-    Color textColor,
-  ) {
+  void _showImageGallery(BuildContext context, List<Uint8List> images, int initialIndex, Color backgroundColor, Color textColor) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -397,9 +390,7 @@ class ResultScreen extends StatelessWidget {
     required Color textColor,
   }) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        maxWidth: 500,
-      ),
+      constraints: const BoxConstraints(maxWidth: 500),
       child: Container(
         decoration: BoxDecoration(
           color: cardColor,
@@ -439,80 +430,4 @@ class _ClassStats {
   int count;
   double sumConf;
   _ClassStats({required this.count, required this.sumConf});
-}
-
-
-class DetectionOverlay extends StatelessWidget {
-  final Uint8List imageBytes;
-  final List<dynamic> detections;
-  final double originalWidth;
-  final double originalHeight;
-
-  // classColorMap: falls du pro Klasse eine andere Farbe willst
-  final Map<int, Color> classColorMap;
-
-  const DetectionOverlay({
-    Key? key,
-    required this.imageBytes,
-    required this.detections,
-    required this.originalWidth,
-    required this.originalHeight,
-    required this.classColorMap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // So skalierst du die Koordinaten auf die aktuelle Widget-Größe
-        final double scaleX = constraints.maxWidth / originalWidth;
-        final double scaleY = constraints.maxHeight / originalHeight;
-
-        return Stack(
-          children: [
-            // 1) Bild als Hintergrund
-            Image.memory(
-              imageBytes,
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
-              fit: BoxFit.cover,
-            ),
-
-            // 2) Jede Detection als Positioned
-            for (var det in detections) ...{
-              _buildBox(det, scaleX, scaleY),
-            },
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildBox(dynamic det, double scaleX, double scaleY) {
-    final bbox = det["bbox"] as List<dynamic>;
-    final double x1 = bbox[0];
-    final double y1 = bbox[1];
-    final double x2 = bbox[2];
-    final double y2 = bbox[3];
-
-    final double left = x1 * scaleX;
-    final double top = y1 * scaleY;
-    final double width = (x2 - x1) * scaleX;
-    final double height = (y2 - y1) * scaleY;
-
-    final int clsId = det["class"];
-    final Color color = classColorMap[clsId] ?? Colors.white;
-
-    return Positioned(
-      left: left,
-      top: top,
-      width: width,
-      height: height,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: color, width: 2),
-        ),
-      ),
-    );
-  }
 }
