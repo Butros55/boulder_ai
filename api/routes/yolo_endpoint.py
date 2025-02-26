@@ -1,3 +1,5 @@
+from sklearn.cluster import DBSCAN
+import numpy as np
 from extensions import db
 from flask import Blueprint, app, request, jsonify
 from flask_jwt_extended import (
@@ -15,17 +17,6 @@ from models.models import Analysis
 model = YOLO('./weights/best.pt')
 yolo_bp = Blueprint('yolo_bp', __name__)
 
-COLOR_RANGES = {
-    "gelb":    [(20, 100, 100), (30, 255, 255)],
-    "tuerkis": [(80, 100, 100), (95, 255, 255)],
-    "lila":    [(140, 100, 100), (160, 255, 255)],
-    "rot1":    [(0, 120, 70), (10, 255, 255)],
-    "rot2":    [(170, 120, 70), (180, 255, 255)],
-    "blau":    [(100, 100, 70), (130, 255, 255)],
-    "orange":  [(10, 100, 100), (20, 255, 255)],
-    "weiss":   [(0, 0, 220), (180, 40, 255)]
-}
-
 CLASS_NAMES = [
     "black",
     "blue",
@@ -39,18 +30,95 @@ CLASS_NAMES = [
     "yellow",
 ]
 
-CLASS_COLORS = [
-    (0, 0, 0),       # black
-    (255, 0, 0),     # blue
-    (128, 128, 128), # grey
-    (0, 165, 255),   # orange
-    (128, 0, 128),   # purple
-    (0, 0, 255),     # red
-    (255, 255, 0),   # turquoise
-    (255, 255, 255), # white
-    (19, 69, 139),   # wood
-    (0, 255, 255),   # yellow
-]
+def custom_distance(a, b):
+    spatial_distance = np.linalg.norm(a[:2] - b[:2])
+    # Statt multiplikativ einen festen Strafwert addieren
+    if a[2] != b[2]:
+        return spatial_distance + 20  # Experimentiere mit diesem Wert
+    return spatial_distance
+
+def group_detections_into_routes(detections, eps=80, min_samples=1):
+    if not detections:
+        return {}
+    
+    data = []
+    for det in detections:
+        x1, y1, x2, y2 = det['bbox']
+        center_x = (x1 + x2) / 2
+        center_y = (y1 + y2) / 2
+        cls_id = det['class']
+        data.append([center_x, center_y, cls_id])
+    data = np.array(data)
+    
+    clustering = DBSCAN(eps=eps, min_samples=min_samples, metric=custom_distance).fit(data)
+    labels = clustering.labels_
+    
+    routes = {}
+    for label, det in zip(labels, detections):
+        label = int(label)
+        if label == -1:
+            continue
+        if label not in routes:
+            routes[label] = []
+        routes[label].append(det)
+    return routes
+
+
+def group_detections_into_routes_by_color(
+    detections, threshold, min_grip_count=3, ignored_class_ids=None
+):
+    """
+    Gruppiert Detektionen in Routen, indem sie zuerst nach ihrer class (Farbe)
+    gruppiert und dann innerhalb jeder Gruppe zusammenhängende Komponenten
+    (basierend auf einem Abstandsthreshold) gesucht werden.
+    
+    detections: Liste von Detection-Dictionaries (mit "bbox", "class", …)
+    threshold: Abstandsschwelle, unterhalb derer zwei Griffe als verbunden gelten.
+    min_grip_count: Mindestanzahl von Griffen, damit eine Route gültig ist.
+    ignored_class_ids: Optionale Menge von Klassen, die ignoriert werden.
+    """
+    if ignored_class_ids is None:
+        ignored_class_ids = set()
+
+    detections_by_class = {}
+    for det in detections:
+        cls_id = det["class"]
+        if cls_id in ignored_class_ids:
+            continue
+        bbox = det["bbox"]
+        x1, y1, x2, y2 = bbox
+        center_x = (x1 + x2) / 2
+        center_y = (y1 + y2) / 2
+        det["_center"] = (center_x, center_y)
+        detections_by_class.setdefault(cls_id, []).append(det)
+
+    routes = []
+    for cls_id, group in detections_by_class.items():
+        n = len(group)
+        visited = [False] * n
+
+        for i in range(n):
+            if not visited[i]:
+                component = []
+                stack = [i]
+                visited[i] = True
+                while stack:
+                    cur = stack.pop()
+                    component.append(group[cur])
+                    cur_center = group[cur]["_center"]
+                    for j in range(n):
+                        if not visited[j]:
+                            # Berechne den euklidischen Abstand
+                            dx = cur_center[0] - group[j]["_center"][0]
+                            dy = cur_center[1] - group[j]["_center"][1]
+                            dist = (dx * dx + dy * dy) ** 0.5
+                            if dist < threshold:
+                                visited[j] = True
+                                stack.append(j)
+                if len(component) >= min_grip_count:
+                    routes.append(component)
+    return routes
+
 
 
 
@@ -81,13 +149,14 @@ def process_image():
             cls_id = int(box.cls[0])
             conf = float(box.conf[0])
             x1, y1, x2, y2 = box.xyxy[0]
-
             detections.append({
                 "class": cls_id,
                 "class_name": CLASS_NAMES[cls_id] if cls_id < len(CLASS_NAMES) else "unknown",
                 "confidence": conf,
                 "bbox": [float(x1), float(y1), float(x2), float(y2)]
             })
+
+    routes = group_detections_into_routes_by_color(detections, threshold=320, min_grip_count=3)
 
     _, yolo_buffer = cv2.imencode('.jpg', yolo_output)
     yolo_base64 = base64.b64encode(yolo_buffer).decode('utf-8')
@@ -97,9 +166,13 @@ def process_image():
     response = {
         "original_image": orig_base64,
         "detections": detections,
+        "routes": routes,
         "image_width": width,
         "image_height": height
     }
+    
+    print('routes:', routes)
+    print('detections:', detections)
 
     if user_id is not None:
         analysis = Analysis(
@@ -109,7 +182,6 @@ def process_image():
             image_height=height,
             detections=detections,
         )
-
         db.session.add(analysis)
         db.session.commit()
 

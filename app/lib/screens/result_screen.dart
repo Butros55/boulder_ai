@@ -117,6 +117,17 @@ class _ResultScreenState extends State<ResultScreen> {
           distanceThreshold,
         );
 
+        final List<dynamic> backendRoutes =
+            widget.processedResult["routes"] as List<dynamic>? ?? [];
+
+        // Map<String, int> detectionToRoute = {};
+        // backendRoutes.forEach((key, routeData) {
+        //   int routeIndex = int.tryParse(key) ?? 0;
+        //   for (var gripJson in routeData as List<dynamic>) {
+        //     detectionToRoute[gripJson["bbox"].toString()] = routeIndex;
+        //   }
+        // });
+
         Map<String, int> detectionToRoute = {};
         for (
           int routeIndex = 0;
@@ -480,6 +491,153 @@ class _ResultScreenState extends State<ResultScreen> {
                                                     ],
                                                   ),
                                                   const SizedBox(width: 32),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                              top: 4.0,
+                                                            ),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.route,
+                                                              color:
+                                                                  accentColor,
+                                                              size: 22,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 8,
+                                                            ),
+                                                            Text(
+                                                              'Routen (backend)',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    textColor,
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      backendRoutes.isEmpty
+                                                          ? Text(
+                                                            'Keine Route erkannt.',
+                                                            style: TextStyle(
+                                                              color: textColor,
+                                                            ),
+                                                          )
+                                                          : Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children:
+                                                                backendRoutes.asMap().entries.map((
+                                                                  entry,
+                                                                ) {
+                                                                  int
+                                                                  routeIndex =
+                                                                      entry
+                                                                          .key; // Der Index in der Liste entspricht dem Route-Index
+                                                                  // entry.value sollte eine Liste von Detection-Objekten sein
+                                                                  List<Grip>
+                                                                  route =
+                                                                      (entry.value
+                                                                              as List<
+                                                                                dynamic
+                                                                              >)
+                                                                          .map(
+                                                                            (
+                                                                              e,
+                                                                            ) => Grip.fromJson(
+                                                                              e
+                                                                                  as Map<
+                                                                                    String,
+                                                                                    dynamic
+                                                                                  >,
+                                                                            ),
+                                                                          )
+                                                                          .toList();
+                                                                  route.sort(
+                                                                    (a, b) => a
+                                                                        .centerY
+                                                                        .compareTo(
+                                                                          b.centerY,
+                                                                        ),
+                                                                  );
+                                                                  final routeColor =
+                                                                      classColorMap[route
+                                                                          .first
+                                                                          .classId] ??
+                                                                      textColor;
+                                                                  return GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(() {
+                                                                        selectedRouteIndex =
+                                                                            (selectedRouteIndex ==
+                                                                                    routeIndex)
+                                                                                ? null
+                                                                                : routeIndex;
+                                                                      });
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.symmetric(
+                                                                        vertical:
+                                                                            4.0,
+                                                                      ),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Container(
+                                                                            width:
+                                                                                16,
+                                                                            height:
+                                                                                16,
+                                                                            margin: const EdgeInsets.only(
+                                                                              right:
+                                                                                  8,
+                                                                            ),
+                                                                            decoration: BoxDecoration(
+                                                                              color:
+                                                                                  routeColor,
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                4,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            'Route ${routeIndex + 1}: (${route.length} Griffe)',
+                                                                            style: TextStyle(
+                                                                              color:
+                                                                                  selectedRouteIndex ==
+                                                                                          routeIndex
+                                                                                      ? routeColor
+                                                                                      : textColor,
+                                                                              fontSize:
+                                                                                  14,
+                                                                              fontWeight:
+                                                                                  selectedRouteIndex ==
+                                                                                          routeIndex
+                                                                                      ? FontWeight.bold
+                                                                                      : FontWeight.normal,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
+                                                          ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(width: 32),
+
                                                   Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
