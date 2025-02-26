@@ -452,6 +452,7 @@ class HomeScreenState extends State<HomeScreen> {
                             arguments: {
                               "original_image": analysis['original_image'],
                               "detections": analysis['detections'],
+                              "routes": analysis['routes'],
                               "image_width": analysis['image_width'] ?? 800,
                               "image_height": analysis['image_height'] ?? 600,
                             },

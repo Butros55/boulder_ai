@@ -20,6 +20,7 @@ def get_analyses():
             "id": analysis.id,
             "original_image": analysis.original_image,
             "detections": analysis.detections,
+            "routes": analysis.routes,
             "timestamp": analysis.timestamp.isoformat(),
             "image_width": analysis.image_width,
             "image_height": analysis.image_height

@@ -1,7 +1,7 @@
 from sklearn.cluster import DBSCAN
 import numpy as np
 from extensions import db
-from flask import Blueprint, app, request, jsonify
+from flask import Blueprint, app, json, request, jsonify
 from flask_jwt_extended import (
     jwt_required, get_jwt_identity
 )
@@ -171,15 +171,13 @@ def process_image():
         "image_height": height
     }
     
-    print('routes:', routes)
-    print('detections:', detections)
-
     if user_id is not None:
         analysis = Analysis(
             user_id=user_id,
             original_image=orig_base64,
             image_width=width,
             image_height=height,
+            routes=json.dumps(routes),
             detections=detections,
         )
         db.session.add(analysis)
