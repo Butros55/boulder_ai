@@ -1,90 +1,10 @@
 import 'dart:convert';
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:boulder_ai/util/detection_overlay.dart';
 import 'package:boulder_ai/util/image_gallery.dart';
+import 'package:boulder_ai/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-class Grip {
-  final int classId;
-  final double centerX;
-  final double centerY;
-  final Map detection;
-
-  Grip({
-    required this.classId,
-    required this.centerX,
-    required this.centerY,
-    required this.detection,
-  });
-}
-
-List<List<Grip>> groupGripsIntoRoutes(
-  List<dynamic> detections,
-  double threshold,
-) {
-  List<Grip> allGrips = [];
-  for (var d in detections) {
-    final List<dynamic> bbox = d["bbox"];
-    double x1 = bbox[0].toDouble();
-    double y1 = bbox[1].toDouble();
-    double x2 = bbox[2].toDouble();
-    double y2 = bbox[3].toDouble();
-    double centerX = (x1 + x2) / 2;
-    double centerY = (y1 + y2) / 2;
-    int classId = d["class"] ?? 0;
-
-    if (classId == 2) continue;
-
-    allGrips.add(
-      Grip(classId: classId, centerX: centerX, centerY: centerY, detection: d),
-    );
-  }
-  Map<int, List<Grip>> gripsByColor = {};
-  for (var grip in allGrips) {
-    gripsByColor.putIfAbsent(grip.classId, () => []).add(grip);
-  }
-  List<List<Grip>> routes = [];
-  for (var group in gripsByColor.values) {
-    routes.addAll(_findConnectedComponents(group, threshold));
-  }
-  return routes;
-}
-
-List<List<Grip>> _findConnectedComponents(List<Grip> grips, double threshold) {
-  List<List<Grip>> components = [];
-  Set<int> visited = {};
-  for (int i = 0; i < grips.length; i++) {
-    if (!visited.contains(i)) {
-      List<Grip> component = [];
-      _dfs(i, grips, threshold, visited, component);
-      components.add(component);
-    }
-  }
-  return components;
-}
-
-void _dfs(
-  int index,
-  List<Grip> grips,
-  double threshold,
-  Set<int> visited,
-  List<Grip> component,
-) {
-  visited.add(index);
-  component.add(grips[index]);
-  for (int j = 0; j < grips.length; j++) {
-    if (!visited.contains(j)) {
-      double dx = grips[index].centerX - grips[j].centerX;
-      double dy = grips[index].centerY - grips[j].centerY;
-      double distance = sqrt(dx * dx + dy * dy);
-      if (distance < threshold) {
-        _dfs(j, grips, threshold, visited, component);
-      }
-    }
-  }
-}
 
 class ResultScreen extends StatefulWidget {
   final Map<String, dynamic> processedResult;

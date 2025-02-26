@@ -47,13 +47,15 @@ class HomeScreenState extends State<HomeScreen> {
         duration: const Duration(seconds: 3),
       ),
     );
-}
+  }
 
   Future<void> _fetchTotalAnalyses() async {
     try {
       final token = await getToken();
       if (token == null) {
-        debugPrint("Kein Token gefunden, Analysen können nicht geladen werden.");
+        debugPrint(
+          "Kein Token gefunden, Analysen können nicht geladen werden.",
+        );
         _showLogoutError();
         _logout();
         return;
@@ -78,7 +80,6 @@ class HomeScreenState extends State<HomeScreen> {
       debugPrint("Fehler beim Abrufen der Analysen: $e");
     }
   }
-
 
   Future<void> _takePicture() async {
     try {
@@ -151,7 +152,6 @@ class HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Kopfzeile
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -163,7 +163,6 @@ class HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // PopupMenuButton mit CircleAvatar als Icon
                       PopupMenuButton<String>(
                         icon: CircleAvatar(
                           backgroundColor: cardColor,
@@ -174,16 +173,17 @@ class HomeScreenState extends State<HomeScreen> {
                             _logout();
                           }
                         },
-                        color: cardColor, // Hintergrund des Popups
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 'logout',
-                            child: Text(
-                              'Logout',
-                              style: TextStyle(color: textColor),
-                            ),
-                          ),
-                        ],
+                        color: cardColor,
+                        itemBuilder:
+                            (context) => [
+                              PopupMenuItem(
+                                value: 'logout',
+                                child: Text(
+                                  'Logout',
+                                  style: TextStyle(color: textColor),
+                                ),
+                              ),
+                            ],
                       ),
                     ],
                   ),

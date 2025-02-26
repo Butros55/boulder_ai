@@ -10,12 +10,12 @@ class ImageGalleryScreen extends StatefulWidget {
   final Color textColor;
 
   const ImageGalleryScreen({
-    Key? key,
+    super.key,
     required this.images,
     required this.initialIndex,
     required this.backgroundColor,
     required this.textColor,
-  }) : super(key: key);
+  });
 
   @override
   State<ImageGalleryScreen> createState() => _ImageGalleryScreenState();

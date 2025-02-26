@@ -7,13 +7,12 @@ class DetectionOverlayInteractive extends StatelessWidget {
   final double originalWidth;
   final double originalHeight;
   final Map<int, Color> classColorMap;
-  // Mapping: String (z. B. bbox.toString()) -> routeIndex
   final Map<String, int> detectionToRoute;
   final int? selectedRouteIndex;
   final ValueChanged<int> onRouteSelected;
 
   const DetectionOverlayInteractive({
-    Key? key,
+    super.key,
     required this.imageBytes,
     required this.detections,
     required this.originalWidth,
@@ -22,28 +21,28 @@ class DetectionOverlayInteractive extends StatelessWidget {
     required this.detectionToRoute,
     required this.selectedRouteIndex,
     required this.onRouteSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final double scaleX = constraints.maxWidth / originalWidth;
-      final double scaleY = constraints.maxHeight / originalHeight;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double scaleX = constraints.maxWidth / originalWidth;
+        final double scaleY = constraints.maxHeight / originalHeight;
 
-      return Stack(
-        children: [
-          Image.memory(
-            imageBytes,
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
-            fit: BoxFit.cover,
-          ),
-          for (var det in detections) ...{
-            _buildBox(det, scaleX, scaleY),
-          },
-        ],
-      );
-    });
+        return Stack(
+          children: [
+            Image.memory(
+              imageBytes,
+              width: constraints.maxWidth,
+              height: constraints.maxHeight,
+              fit: BoxFit.cover,
+            ),
+            for (var det in detections) ...{_buildBox(det, scaleX, scaleY)},
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildBox(dynamic det, double scaleX, double scaleY) {
@@ -61,13 +60,16 @@ class DetectionOverlayInteractive extends StatelessWidget {
     final int clsId = det["class"];
     final Color color = classColorMap[clsId] ?? Colors.white;
 
-    // Hole den Route-Index dieser Box anhand des Mapping
     final int? routeIndex = detectionToRoute[det["bbox"].toString()];
 
-    // Falls eine Route ausgewählt ist und diese Box NICHT zur Route gehört, setze alpha reduziert.
-    final double alpha = (selectedRouteIndex != null && routeIndex != selectedRouteIndex) ? 0.3 : 1.0;
-    // Falls diese Box zur selektierten Route gehört, mache den Rahmen dicker.
-    final double borderWidth = (selectedRouteIndex != null && routeIndex == selectedRouteIndex) ? 3 : 2;
+    final double alpha =
+        (selectedRouteIndex != null && routeIndex != selectedRouteIndex)
+            ? 0.3
+            : 1.0;
+    final double borderWidth =
+        (selectedRouteIndex != null && routeIndex == selectedRouteIndex)
+            ? 3
+            : 2;
 
     return Positioned(
       left: left,
@@ -76,7 +78,6 @@ class DetectionOverlayInteractive extends StatelessWidget {
       height: height,
       child: GestureDetector(
         onTap: () {
-          // Wenn routeIndex existiert, melde diesen an den Parent.
           if (routeIndex != null) {
             onRouteSelected(routeIndex);
           }

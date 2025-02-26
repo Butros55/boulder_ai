@@ -18,9 +18,8 @@ List<List<Grip>> groupGripsIntoRoutes(
   List<dynamic> detections,
   double threshold, {
   Set<int> ignoredClassIds = const {},
-  int minGripCount = 3, // Default: min. 3 Griffe pro Route
+  int minGripCount = 3,
 }) {
-  // 1) Alle Griffe einsammeln, außer die ignorierten Klassen
   List<Grip> allGrips = [];
   for (var d in detections) {
     final bbox = d["bbox"] as List<dynamic>;
@@ -33,32 +32,25 @@ List<List<Grip>> groupGripsIntoRoutes(
     double centerY = (y1 + y2) / 2;
     int classId = d["class"] ?? 0;
 
-    // Überspringen, wenn Klasse ignoriert
     if (ignoredClassIds.contains(classId)) {
       continue;
     }
 
-    allGrips.add(Grip(
-      classId: classId,
-      centerX: centerX,
-      centerY: centerY,
-      detection: d,
-    ));
+    allGrips.add(
+      Grip(classId: classId, centerX: centerX, centerY: centerY, detection: d),
+    );
   }
 
-  // 2) Nach Farbe gruppieren
   Map<int, List<Grip>> gripsByColor = {};
   for (var grip in allGrips) {
     gripsByColor.putIfAbsent(grip.classId, () => []).add(grip);
   }
 
-  // 3) Für jede Farbgruppe: zusammenhängende Komponenten suchen
   List<List<Grip>> routes = [];
   for (var group in gripsByColor.values) {
     routes.addAll(_findConnectedComponents(group, threshold));
   }
 
-  // 4) Routen filtern: minGripCount
   List<List<Grip>> filteredRoutes = [];
   for (var route in routes) {
     if (route.length >= minGripCount) {
@@ -82,7 +74,13 @@ List<List<Grip>> _findConnectedComponents(List<Grip> grips, double threshold) {
   return components;
 }
 
-void _dfs(int index, List<Grip> grips, double threshold, Set<int> visited, List<Grip> component) {
+void _dfs(
+  int index,
+  List<Grip> grips,
+  double threshold,
+  Set<int> visited,
+  List<Grip> component,
+) {
   visited.add(index);
   component.add(grips[index]);
 
