@@ -16,12 +16,11 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   final ImagePicker _picker = ImagePicker();
-  int _totalAnalyses = 0;
-  bool _isLoading = false;
-
-  List<dynamic> _recentAnalyses = [];
-
   final storage = const FlutterSecureStorage();
+
+  bool _isLoading = false;
+  int _totalAnalyses = 0;
+  List<dynamic> _recentAnalyses = [];
 
   @override
   void initState() {
@@ -40,13 +39,13 @@ class HomeScreenState extends State<HomeScreen> {
 
   void _showLogoutError() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text(
+      const SnackBar(
+        content: Text(
           "Deine Sitzung ist abgelaufen. Bitte logge dich erneut ein.",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
+        duration: Duration(seconds: 3),
       ),
     );
   }
@@ -174,16 +173,16 @@ class HomeScreenState extends State<HomeScreen> {
                         onSelected: (value) {
                           if (value == 'logout') {
                             _logout();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text(
-                                "Sie wurden erfolgreich abgemeldet!",
-                                style: TextStyle(color: Colors.white),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                  "Sie wurden erfolgreich abgemeldet!",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.green,
+                                duration: const Duration(seconds: 3),
                               ),
-                              backgroundColor: Colors.green,
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
+                            );
                           }
                         },
                         color: cardColor,
@@ -200,7 +199,9 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 24),
+
                   Text(
                     'Willkommen! \nErkenne Boulder-Griffe per Foto oder Bild-Upload.',
                     style: TextStyle(
@@ -208,67 +209,112 @@ class HomeScreenState extends State<HomeScreen> {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 40),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Dein Fortschritt',
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Bisher $_totalAnalyses Boulder analysiert',
-                          style: TextStyle(
-                            color: textColor.withValues(alpha: 0.7),
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildOptionButton(
-                        label: 'Foto aufnehmen',
-                        icon: Icons.camera_alt_rounded,
-                        onTap: _takePicture,
-                        accentColor: accentColor,
-                        textColor: textColor,
-                      ),
-                      _buildOptionButton(
-                        label: 'Bild hochladen',
-                        icon: Icons.photo_library_rounded,
-                        onTap: _pickImage,
-                        accentColor: accentColor,
-                        textColor: textColor,
-                      ),
-                    ],
-                  ),
-               const SizedBox(height: 40),
-                Text(
-                  'Zuletzt analysierte Bilder',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
 
-                const SizedBox(height: 8),
-                _buildRecentAnalysesList(cardColor, textColor),
+                  const SizedBox(height: 32),
+
+                  Card(
+                    color: cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Icon(Icons.insights, color: accentColor, size: 36),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Dein Fortschritt',
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Bisher $_totalAnalyses Boulder analysiert',
+                                  style: TextStyle(
+                                    color: textColor.withValues(alpha: 0.7),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  Card(
+                    color: cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Aktionen',
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildOptionButton(
+                                  label: 'Foto aufnehmen',
+                                  icon: Icons.camera_alt_rounded,
+                                  onTap: _takePicture,
+                                  accentColor: accentColor,
+                                  textColor: textColor,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: _buildOptionButton(
+                                  label: 'Bild hochladen',
+                                  icon: Icons.photo_library_rounded,
+                                  onTap: _pickImage,
+                                  accentColor: accentColor,
+                                  textColor: textColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  Text(
+                    'Zuletzt analysierte Bilder',
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  _buildRecentAnalysesList(cardColor, textColor),
                 ],
               ),
             ),
@@ -289,93 +335,137 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-Widget _buildRecentAnalysesList(Color cardColor, Color textColor) {
-  if (_recentAnalyses.isEmpty) {
-    return Text(
-      'Noch keine Analysen vorhanden.',
-      style: TextStyle(color: textColor.withOpacity(0.7)),
-    );
-  }
+  Widget _buildRecentAnalysesList(Color cardColor, Color textColor) {
+    if (_recentAnalyses.isEmpty) {
+      return Text(
+        'Noch keine Analysen vorhanden.',
+        style: TextStyle(color: textColor.withValues(alpha: 0.7)),
+      );
+    }
+    final Color accentColor = const Color(0xFF7F5AF0);
 
-  return Wrap(
-    spacing: 16,         // Horizontaler Abstand zwischen den Containern
-    runSpacing: 16,      // Vertikaler Abstand zwischen den Containern
-    children: _recentAnalyses.map((analysis) {
-      final String originalBase64 = analysis['original_image'];
-      final String timestamp = analysis['timestamp'];
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      spacing: 16,
+      runSpacing: 16,
+      children:
+          _recentAnalyses.map((analysis) {
+            final String originalBase64 = analysis['original_image'];
+            final String timestamp = analysis['timestamp'];
+            final List<dynamic> detections = analysis['detections'];
+            final int detectionsTotal = detections.length;
+            final bytes = base64Decode(originalBase64);
 
-      final bytes = base64Decode(originalBase64);
-      return SizedBox(
-        width: 250,
-        child: Container(
-          decoration: BoxDecoration(
-            color: cardColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
+            return SizedBox(
+              width: 260,
+              child: Card(
+                color: cardColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Image.memory(
-                  bytes,
-                  width: 250,
-                  height: 350,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                elevation: 2,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Analyse #${analysis['id']}',
-                      style: TextStyle(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                      child: Image.memory(
+                        bytes,
+                        width: 250,
+                        height: 350,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Zeit: $timestamp',
-                      style: TextStyle(
-                        color: textColor.withOpacity(0.7),
-                        fontSize: 12,
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.assessment, color: accentColor),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${analysis['id']}',
+                                    style: TextStyle(
+                                      color: textColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.access_time, color: accentColor),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Zeit: $timestamp',
+                                    style: TextStyle(
+                                      color: textColor.withValues(alpha: 0.7),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.fitness_center,
+                                    color: accentColor,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Griffe: $detectionsTotal',
+                                    style: TextStyle(
+                                      color: textColor.withValues(alpha: 0.7),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_forward, color: textColor),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/result',
+                            arguments: {
+                              "original_image": analysis['original_image'],
+                              "detections": analysis['detections'],
+                              "image_width": analysis['image_width'] ?? 800,
+                              "image_height": analysis['image_height'] ?? 600,
+                            },
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-              // Button
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_forward, color: textColor),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/result',
-                      arguments: {
-                        "original_image": analysis['original_image'],
-                        "detections": analysis['detections'],
-                        "image_width": analysis['image_width'] ?? 800,
-                        "image_height": analysis['image_height'] ?? 600,
-                      },
-                    );
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-    }).toList(),
-  );
-}
+            );
+          }).toList(),
+    );
+  }
 
   Widget _buildOptionButton({
     required String label,
@@ -384,30 +474,27 @@ Widget _buildRecentAnalysesList(Color cardColor, Color textColor) {
     required Color accentColor,
     required Color textColor,
   }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [accentColor.withValues(alpha: 0.8), accentColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [accentColor.withValues(alpha: 0.8), accentColor],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: textColor),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
             ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, color: textColor),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
+          ],
         ),
       ),
     );

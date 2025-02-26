@@ -32,11 +32,17 @@ class DetectionOverlayInteractive extends StatelessWidget {
 
         return Stack(
           children: [
-            Image.memory(
-              imageBytes,
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12),
+              ),
+              child: Image.memory(
+                imageBytes,
+                width: constraints.maxWidth,
+                height: constraints.maxHeight,
+                fit: BoxFit.cover,
+              ),
             ),
             for (var det in detections) ...{_buildBox(det, scaleX, scaleY)},
           ],

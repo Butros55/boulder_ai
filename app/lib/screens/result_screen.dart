@@ -17,7 +17,7 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   int? selectedRouteIndex;
-  bool _isRoutesPanelOpen = true;
+
   @override
   Widget build(BuildContext context) {
     final storage = const FlutterSecureStorage();
@@ -54,6 +54,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
         final Color backgroundColor = const Color(0xFF1C1C1E);
         final Color cardColor = const Color(0xFF2C2C2E);
+        final Color accentColor = const Color(0xFF7F5AF0);
         final Color textColor = Colors.white;
 
         Map<int, Color> classColorMap = {
@@ -106,8 +107,8 @@ class _ResultScreenState extends State<ResultScreen> {
           );
         }
 
-
-        final List<dynamic> detections = widget.processedResult["detections"] ?? [];
+        final List<dynamic> detections =
+            widget.processedResult["detections"] ?? [];
         final int originalWidth = widget.processedResult["image_width"];
         final int originalHeight = widget.processedResult["image_height"];
 
@@ -115,7 +116,6 @@ class _ResultScreenState extends State<ResultScreen> {
           detections,
           distanceThreshold,
         );
-
 
         Map<String, int> detectionToRoute = {};
         for (
@@ -130,7 +130,6 @@ class _ResultScreenState extends State<ResultScreen> {
 
         final List<dynamic> detectionsClass =
             widget.processedResult["detections"] ?? [];
-
         final Map<int, _ClassStats> stats = {};
         for (var det in detectionsClass) {
           final int clsId = det["class"] ?? 0;
@@ -139,7 +138,6 @@ class _ResultScreenState extends State<ResultScreen> {
           stats[clsId]!.count++;
           stats[clsId]!.sumConf += conf;
         }
-
         final classEntries =
             stats.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
 
@@ -161,352 +159,426 @@ class _ResultScreenState extends State<ResultScreen> {
               style: TextStyle(color: textColor),
             ),
             iconTheme: IconThemeData(color: textColor),
-            actions: const [],
           ),
-          body: Row(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 24,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Analyse abgeschlossen!',
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Center(
-                        child: Text(
-                          'Hier sind deine Bilder und die erkannten Griffe:',
-                          style: TextStyle(
-                            color: textColor.withValues(alpha: 0.8),
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Center(
-                        child: Wrap(
-                          spacing: 16,
-                          runSpacing: 16,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                _showImageGallery(
-                                  context,
-                                  [origBytes],
-                                  0,
-                                  backgroundColor,
-                                  textColor,
-                                );
-                              },
-                              child: _buildImageCard(
-                                label: 'Original',
-                                imageBytes: origBytes,
-                                cardColor: cardColor,
-                                textColor: textColor,
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: cardColor,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'KI-Detektion',
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final availableWidth = constraints.maxWidth;
+
+              return Row(
+                children: [
+                  SizedBox(
+                    width: availableWidth,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle_outline,
+                                      color: accentColor,
+                                      size: 28,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Analyse abgeschlossen!',
                                       style: TextStyle(
                                         color: textColor,
-                                        fontSize: 16,
+                                        fontSize: 22,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 400,
-                                    child: AspectRatio(
-                                      aspectRatio:
-                                          originalWidth / originalHeight,
-                                      child: DetectionOverlayInteractive(
-                                        imageBytes: origBytes,
-                                        detections: detections,
-                                        originalWidth: originalWidth.toDouble(),
-                                        originalHeight:
-                                            originalHeight.toDouble(),
-                                        classColorMap: classColorMap,
-                                        detectionToRoute: detectionToRoute,
-                                        selectedRouteIndex: selectedRouteIndex,
-                                        onRouteSelected: (int routeIndex) {
-                                          setState(() {
-                                            if (selectedRouteIndex ==
-                                                routeIndex) {
-                                              selectedRouteIndex = null;
-                                            } else {
-                                              selectedRouteIndex = routeIndex;
-                                            }
-                                          });
-                                        },
-                                      ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Center(
+                                  child: Text(
+                                    'Hier sind deine Bilder und die erkannten Griffe:',
+                                    style: TextStyle(
+                                      color: textColor.withValues(alpha: 0.8),
+                                      fontSize: 14,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Center(
-                        child: Text(
-                          'Durchschnittliche Confidence (alle): ${globalAvg.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            color: textColor.withValues(alpha: 0.9),
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: cardColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child:
-                            classEntries.isEmpty
-                                ? Text(
-                                  'Keine Griffe erkannt.',
-                                  style: TextStyle(color: textColor),
-                                )
-                                : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:
-                                      classEntries.map((entry) {
-                                        final clsId = entry.key;
-                                        final cStats = entry.value;
-                                        final avgConf =
-                                            cStats.sumConf / cStats.count;
-
-                                        final String name =
-                                            (clsId < classNames.length)
-                                                ? classNames[clsId]
-                                                : 'Unbekannt #$clsId';
-                                        final Color labelColor =
-                                            classColorMap[clsId] ??
-                                            Colors.white70;
-
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 4.0,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: 16,
-                                                height: 16,
-                                                margin: const EdgeInsets.only(
-                                                  right: 8,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: labelColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  '$name: ${cStats.count}x   Ø Conf: ${avgConf.toStringAsFixed(2)}',
-                                                  style: TextStyle(
-                                                    color: textColor,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }).toList(),
                                 ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                width: _isRoutesPanelOpen ? 300 : 40,
-                decoration: BoxDecoration(
-                  color: cardColor,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    bottomLeft: Radius.circular(12),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      offset: const Offset(-3, 0),
-                      blurRadius: 6,
-                    ),
-                  ],
-                ),
-                child: SafeArea(
-                  child: Stack(
-                    children: [
-                      if (_isRoutesPanelOpen)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 40.0,
-                            right: 8.0,
+                                const SizedBox(height: 24),
+                                Center(
+                                  child: Wrap(
+                                    alignment: WrapAlignment.center,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    spacing: 16,
+                                    runSpacing: 16,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          _showImageGallery(
+                                            context,
+                                            [origBytes],
+                                            0,
+                                            backgroundColor,
+                                            textColor,
+                                          );
+                                        },
+                                        child: _buildImageCard(
+                                          label: 'Original',
+                                          imageBytes: origBytes,
+                                          cardColor: cardColor,
+                                          textColor: textColor,
+                                        ),
+                                      ),
+                                      Card(
+                                        color: cardColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'KI-Detektion',
+                                              style: TextStyle(
+                                                color: textColor,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            SizedBox(
+                                              width: 450,
+                                              child: AspectRatio(
+                                                aspectRatio:
+                                                    originalWidth /
+                                                    originalHeight,
+                                                child: DetectionOverlayInteractive(
+                                                  imageBytes: origBytes,
+                                                  detections: detections,
+                                                  originalWidth:
+                                                      originalWidth.toDouble(),
+                                                  originalHeight:
+                                                      originalHeight.toDouble(),
+                                                  classColorMap: classColorMap,
+                                                  detectionToRoute:
+                                                      detectionToRoute,
+                                                  selectedRouteIndex:
+                                                      selectedRouteIndex,
+                                                  onRouteSelected: (
+                                                    int routeIndex,
+                                                  ) {
+                                                    setState(() {
+                                                      if (selectedRouteIndex ==
+                                                          routeIndex) {
+                                                        selectedRouteIndex =
+                                                            null;
+                                                      } else {
+                                                        selectedRouteIndex =
+                                                            routeIndex;
+                                                      }
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              const SizedBox(height: 12),
-                              Text(
-                                'Routen',
-                                style: TextStyle(
-                                  color: textColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                              Card(
+                                color: cardColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.trending_up,
+                                        color: accentColor,
+                                        size: 28,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          'Durchschnittliche Confidence (alle): '
+                                          '${globalAvg.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            color: textColor.withValues(
+                                              alpha: 0.9,
+                                            ),
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Expanded(
-                                child: SingleChildScrollView(
+                              Card(
+                                color: cardColor,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
                                   child:
-                                      detectedRoutes.isEmpty
+                                      classEntries.isEmpty
                                           ? Text(
-                                            'Keine Route erkannt.',
+                                            'Keine Griffe erkannt.',
                                             style: TextStyle(color: textColor),
                                           )
-                                          : Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children:
-                                                detectedRoutes.asMap().entries.map((
-                                                  entry,
-                                                ) {
-                                                  int routeIndex = entry.key;
-                                                  List<Grip> route =
-                                                      entry.value;
-                                                  route.sort(
-                                                    (a, b) => a.centerY
-                                                        .compareTo(b.centerY),
-                                                  );
-                                                  final routeColor =
-                                                      classColorMap[route
-                                                          .first
-                                                          .classId] ??
-                                                      textColor;
-
-                                                  return GestureDetector(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        if (selectedRouteIndex ==
-                                                            routeIndex) {
-                                                          selectedRouteIndex =
-                                                              null;
-                                                        } else {
-                                                          selectedRouteIndex =
-                                                              routeIndex;
-                                                        }
-                                                      });
-                                                    },
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.symmetric(
-                                                            vertical: 4.0,
+                                          : Row(
+                                            children: [
+                                              Wrap(
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                              top: 4.0,
+                                                            ),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.route,
+                                                              color:
+                                                                  accentColor,
+                                                              size: 22,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 8,
+                                                            ),
+                                                            Text(
+                                                              'Routen',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    textColor,
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      detectedRoutes.isEmpty
+                                                          ? Text(
+                                                            'Keine Route erkannt.',
+                                                            style: TextStyle(
+                                                              color: textColor,
+                                                            ),
+                                                          )
+                                                          : Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children:
+                                                                detectedRoutes.asMap().entries.map((
+                                                                  entry,
+                                                                ) {
+                                                                  int
+                                                                  routeIndex =
+                                                                      entry.key;
+                                                                  List<Grip>
+                                                                  route =
+                                                                      entry
+                                                                          .value;
+                                                                  route.sort(
+                                                                    (a, b) => a
+                                                                        .centerY
+                                                                        .compareTo(
+                                                                          b.centerY,
+                                                                        ),
+                                                                  );
+                                                                  final routeColor =
+                                                                      classColorMap[route
+                                                                          .first
+                                                                          .classId] ??
+                                                                      textColor;
+                                                                  return GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(() {
+                                                                        selectedRouteIndex =
+                                                                            selectedRouteIndex ==
+                                                                                    routeIndex
+                                                                                ? null
+                                                                                : routeIndex;
+                                                                      });
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.symmetric(
+                                                                        vertical:
+                                                                            4.0,
+                                                                      ),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Container(
+                                                                            width:
+                                                                                16,
+                                                                            height:
+                                                                                16,
+                                                                            margin: const EdgeInsets.only(
+                                                                              right:
+                                                                                  8,
+                                                                            ),
+                                                                            decoration: BoxDecoration(
+                                                                              color:
+                                                                                  routeColor,
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                4,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            'Route ${routeIndex + 1}: (${route.length} Griffe)',
+                                                                            style: TextStyle(
+                                                                              color:
+                                                                                  selectedRouteIndex ==
+                                                                                          routeIndex
+                                                                                      ? routeColor
+                                                                                      : textColor,
+                                                                              fontSize:
+                                                                                  14,
+                                                                              fontWeight:
+                                                                                  selectedRouteIndex ==
+                                                                                          routeIndex
+                                                                                      ? FontWeight.bold
+                                                                                      : FontWeight.normal,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
                                                           ),
-                                                      child: Row(
+                                                    ],
+                                                  ),
+                                                  const SizedBox(width: 32),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
                                                         children: [
-                                                          Container(
-                                                            width: 16,
-                                                            height: 16,
-                                                            margin:
-                                                                const EdgeInsets.only(
-                                                                  right: 8,
-                                                                ),
-                                                            decoration:
-                                                                BoxDecoration(
+                                                          Icon(
+                                                            Icons.list,
+                                                            color: accentColor,
+                                                            size: 28,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 8,
+                                                          ),
+                                                          Text(
+                                                            'Erkannte Griffe',
+                                                            style: TextStyle(
+                                                              color: textColor,
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      ...classEntries.map((
+                                                        entry,
+                                                      ) {
+                                                        final clsId = entry.key;
+                                                        final cStats =
+                                                            entry.value;
+                                                        final avgConf =
+                                                            cStats.sumConf /
+                                                            cStats.count;
+                                                        final String name =
+                                                            (clsId <
+                                                                    classNames
+                                                                        .length)
+                                                                ? classNames[clsId]
+                                                                : 'Unbekannt #$clsId';
+                                                        final Color labelColor =
+                                                            classColorMap[clsId] ??
+                                                            Colors.white70;
+
+                                                        return Padding(
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                vertical: 4.0,
+                                                              ),
+                                                          child: Row(
+                                                            children: [
+                                                              Container(
+                                                                width: 16,
+                                                                height: 16,
+                                                                margin:
+                                                                    const EdgeInsets.only(
+                                                                      right: 8,
+                                                                    ),
+                                                                decoration: BoxDecoration(
                                                                   color:
-                                                                      routeColor,
+                                                                      labelColor,
                                                                   borderRadius:
                                                                       BorderRadius.circular(
                                                                         4,
                                                                       ),
                                                                 ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Text(
-                                                              'Route ${routeIndex + 1}: (${route.length} Griffe)',
-                                                              style: TextStyle(
-                                                                color:
-                                                                    selectedRouteIndex ==
-                                                                            routeIndex
-                                                                        ? routeColor
-                                                                        : textColor,
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    selectedRouteIndex ==
-                                                                            routeIndex
-                                                                        ? FontWeight
-                                                                            .bold
-                                                                        : FontWeight
-                                                                            .normal,
                                                               ),
-                                                            ),
+                                                              Text(
+                                                                '$name: ${cStats.count}x   Ø Conf: ${avgConf.toStringAsFixed(2)}',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      textColor,
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
+                                                        );
+                                                      }),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        child: Center(
-                          child: IconButton(
-                            icon: Icon(
-                              _isRoutesPanelOpen
-                                  ? Icons.arrow_forward
-                                  : Icons.arrow_back,
-                              color: textColor,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isRoutesPanelOpen = !_isRoutesPanelOpen;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         );
       },
@@ -540,35 +612,30 @@ class _ResultScreenState extends State<ResultScreen> {
     required Color cardColor,
     required Color textColor,
   }) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 400),
-      child: Container(
-        decoration: BoxDecoration(
-          color: cardColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
-              ),
-              child: Image.memory(imageBytes, fit: BoxFit.cover),
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(12),
+              bottomRight: Radius.circular(12),
             ),
-          ],
-        ),
+            child: Image.memory(imageBytes, fit: BoxFit.cover, width: 450),
+          ),
+        ],
       ),
     );
   }
