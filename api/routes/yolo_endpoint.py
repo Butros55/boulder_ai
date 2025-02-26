@@ -82,12 +82,6 @@ def process_image():
             conf = float(box.conf[0])
             x1, y1, x2, y2 = box.xyxy[0]
 
-            # color = CLASS_COLORS[cls_id % len(CLASS_COLORS)]
-            # cv2.rectangle(yolo_output, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
-            # label_text = f"{class_name}: {conf:.2f}"
-            # cv2.putText(yolo_output, label_text, (int(x1), int(y1)-5),
-            #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-
             detections.append({
                 "class": cls_id,
                 "class_name": CLASS_NAMES[cls_id] if cls_id < len(CLASS_NAMES) else "unknown",
@@ -104,8 +98,8 @@ def process_image():
         "original_image": orig_base64,
         "detection_image": yolo_base64,
         "detections": detections,
-        "image_width": width,   # Neu
-        "image_height": height  # Neu
+        "image_width": width,
+        "image_height": height
     }
 
 
