@@ -19,6 +19,10 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // FocusNodes hinzufügen
+  final FocusNode _usernameFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
+
   final storage = const FlutterSecureStorage();
   bool _isLoading = false;
   String? _errorMessage;
@@ -41,6 +45,16 @@ class LoginScreenState extends State<LoginScreen> {
         final token = data["access_token"];
         await storage.write(key: 'jwt_token', value: token);
         Navigator.pushReplacementNamed(context, '/');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              "Sie wurden erfolgreich angemeldet!",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       } else {
         final data = jsonDecode(response.body);
         setState(() {
@@ -61,6 +75,8 @@ class LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    _usernameFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
@@ -95,7 +111,7 @@ class LoginScreenState extends State<LoginScreen> {
               Text(
                 'Willkommen zurück!\nBitte logge dich ein.',
                 style: TextStyle(
-                  color: textColor.withValues(alpha: 0.8),
+                  color: textColor.withOpacity(0.8),
                   fontSize: 16,
                 ),
               ),
@@ -114,17 +130,20 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
                 child: TextField(
                   controller: _usernameController,
+                  focusNode: _usernameFocus,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Benutzername',
-                    hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
+                    hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
                     border: InputBorder.none,
                   ),
+                  onSubmitted: (_) {
+                    // Beim Drücken der Enter-Taste wird der Fokus aufs Passwortfeld gesetzt
+                    FocusScope.of(context).requestFocus(_passwordFocus);
+                  },
                 ),
               ),
-              
               const SizedBox(height: 16),
-
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -133,17 +152,21 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
                 child: TextField(
                   controller: _passwordController,
+                  focusNode: _passwordFocus,
                   obscureText: true,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Passwort',
-                    hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
+                    hintStyle: TextStyle(color: textColor.withOpacity(0.7)),
                     border: InputBorder.none,
                   ),
+                  onSubmitted: (_) {
+                    // Beim Drücken der Enter-Taste wird der Login-Vorgang gestartet
+                    _login();
+                  },
                 ),
               ),
               const SizedBox(height: 24),
-
               GestureDetector(
                 onTap: _isLoading ? null : _login,
                 child: Container(
@@ -151,33 +174,29 @@ class LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [accentColor.withValues(alpha: 0.8), accentColor],
+                      colors: [accentColor.withOpacity(0.8), accentColor],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Center(
-                    child:
-                        _isLoading
-                            ? CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                textColor,
-                              ),
-                            )
-                            : Text(
-                              'Login',
-                              style: TextStyle(
-                                color: textColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                    child: _isLoading
+                        ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(textColor),
+                          )
+                        : Text(
+                            'Login',
+                            style: TextStyle(
+                              color: textColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
+                          ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-
               Center(
                 child: GestureDetector(
                   onTap: () {

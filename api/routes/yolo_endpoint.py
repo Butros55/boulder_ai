@@ -96,19 +96,20 @@ def process_image():
 
     response = {
         "original_image": orig_base64,
-        "detection_image": yolo_base64,
         "detections": detections,
         "image_width": width,
         "image_height": height
     }
 
-
     if user_id is not None:
         analysis = Analysis(
             user_id=user_id,
             original_image=orig_base64,
-            detection_image=yolo_base64
+            image_width=width,
+            image_height=height,
+            detections=detections,
         )
+
         db.session.add(analysis)
         db.session.commit()
 

@@ -17,8 +17,12 @@ class RegisterScreenState extends State<RegisterScreen> {
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  // FocusNodes für die Textfelder
+  final FocusNode _usernameFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _confirmPasswordFocus = FocusNode();
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -47,9 +51,17 @@ class RegisterScreenState extends State<RegisterScreen> {
         body: jsonEncode({"username": username, "password": password}),
       );
       if (response.statusCode == 201) {
-        setState(() {
-          _successMessage = "Registrierung erfolgreich. Bitte logge dich ein.";
-        });
+        Navigator.pushReplacementNamed(context, '/login');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              "Sie haben sich erfolgreich registriert, bitte melden Sie sich an!",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       } else {
         final data = jsonDecode(response.body);
         setState(() {
@@ -71,6 +83,9 @@ class RegisterScreenState extends State<RegisterScreen> {
     _usernameController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _usernameFocus.dispose();
+    _passwordFocus.dispose();
+    _confirmPasswordFocus.dispose();
     super.dispose();
   }
 
@@ -118,7 +133,6 @@ class RegisterScreenState extends State<RegisterScreen> {
               if (_successMessage != null)
                 Text(_successMessage!, style: TextStyle(color: accentColor)),
               const SizedBox(height: 16),
-
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -127,16 +141,19 @@ class RegisterScreenState extends State<RegisterScreen> {
                 ),
                 child: TextField(
                   controller: _usernameController,
+                  focusNode: _usernameFocus,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Benutzername',
                     hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
+                  onSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_passwordFocus);
+                  },
                 ),
               ),
               const SizedBox(height: 16),
-
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -145,6 +162,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                 ),
                 child: TextField(
                   controller: _passwordController,
+                  focusNode: _passwordFocus,
                   obscureText: true,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
@@ -152,10 +170,12 @@ class RegisterScreenState extends State<RegisterScreen> {
                     hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
+                  onSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_confirmPasswordFocus);
+                  },
                 ),
               ),
               const SizedBox(height: 16),
-
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -164,6 +184,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                 ),
                 child: TextField(
                   controller: _confirmPasswordController,
+                  focusNode: _confirmPasswordFocus,
                   obscureText: true,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
@@ -171,10 +192,12 @@ class RegisterScreenState extends State<RegisterScreen> {
                     hintStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
                     border: InputBorder.none,
                   ),
+                  onSubmitted: (_) {
+                    _register();
+                  },
                 ),
               ),
               const SizedBox(height: 24),
-
               GestureDetector(
                 onTap: _isLoading ? null : _register,
                 child: Container(
@@ -189,26 +212,24 @@ class RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Center(
-                    child:
-                        _isLoading
-                            ? CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                textColor,
-                              ),
-                            )
-                            : Text(
-                              'Registrieren',
-                              style: TextStyle(
-                                color: textColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                    child: _isLoading
+                        ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              textColor,
                             ),
+                          )
+                        : Text(
+                            'Registrieren',
+                            style: TextStyle(
+                              color: textColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-
               Center(
                 child: GestureDetector(
                   onTap: () {

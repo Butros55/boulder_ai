@@ -19,6 +19,8 @@ class HomeScreenState extends State<HomeScreen> {
   int _totalAnalyses = 0;
   bool _isLoading = false;
 
+  List<dynamic> _recentAnalyses = [];
+
   final storage = const FlutterSecureStorage();
 
   @override
@@ -68,6 +70,7 @@ class HomeScreenState extends State<HomeScreen> {
         final data = jsonDecode(response.body);
         setState(() {
           _totalAnalyses = data['total'] as int;
+          _recentAnalyses = data['analyses'] as List<dynamic>;
         });
       } else if (response.statusCode == 401) {
         debugPrint("Token ungültig oder abgelaufen.");
@@ -171,6 +174,16 @@ class HomeScreenState extends State<HomeScreen> {
                         onSelected: (value) {
                           if (value == 'logout') {
                             _logout();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                "Sie wurden erfolgreich abgemeldet!",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
                           }
                         },
                         color: cardColor,
@@ -244,6 +257,18 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
+               const SizedBox(height: 40),
+                Text(
+                  'Zuletzt analysierte Bilder',
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+                _buildRecentAnalysesList(cardColor, textColor),
                 ],
               ),
             ),
@@ -263,6 +288,94 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+Widget _buildRecentAnalysesList(Color cardColor, Color textColor) {
+  if (_recentAnalyses.isEmpty) {
+    return Text(
+      'Noch keine Analysen vorhanden.',
+      style: TextStyle(color: textColor.withOpacity(0.7)),
+    );
+  }
+
+  return Wrap(
+    spacing: 16,         // Horizontaler Abstand zwischen den Containern
+    runSpacing: 16,      // Vertikaler Abstand zwischen den Containern
+    children: _recentAnalyses.map((analysis) {
+      final String originalBase64 = analysis['original_image'];
+      final String timestamp = analysis['timestamp'];
+
+      final bytes = base64Decode(originalBase64);
+      return SizedBox(
+        width: 250,
+        child: Container(
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+                child: Image.memory(
+                  bytes,
+                  width: 250,
+                  height: 350,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Analyse #${analysis['id']}',
+                      style: TextStyle(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Zeit: $timestamp',
+                      style: TextStyle(
+                        color: textColor.withOpacity(0.7),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Button
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_forward, color: textColor),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/result',
+                      arguments: {
+                        "original_image": analysis['original_image'],
+                        "detections": analysis['detections'],
+                        "image_width": analysis['image_width'] ?? 800,
+                        "image_height": analysis['image_height'] ?? 600,
+                      },
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }).toList(),
+  );
+}
 
   Widget _buildOptionButton({
     required String label,

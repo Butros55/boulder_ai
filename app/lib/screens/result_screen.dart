@@ -83,14 +83,10 @@ class _ResultScreenState extends State<ResultScreen> {
         ];
 
         Uint8List origBytes;
-        Uint8List detectBytes;
         try {
           final String origBase64 =
               widget.processedResult["original_image"] as String;
-          final String detectBase64 =
-              widget.processedResult["detection_image"] as String;
           origBytes = base64Decode(origBase64);
-          detectBytes = base64Decode(detectBase64);
         } catch (e) {
           return Scaffold(
             backgroundColor: backgroundColor,
@@ -110,14 +106,16 @@ class _ResultScreenState extends State<ResultScreen> {
           );
         }
 
-        final List<dynamic> detections =
-            widget.processedResult["detections"] ?? [];
+
+        final List<dynamic> detections = widget.processedResult["detections"] ?? [];
+        final int originalWidth = widget.processedResult["image_width"];
+        final int originalHeight = widget.processedResult["image_height"];
+
         List<List<Grip>> detectedRoutes = groupGripsIntoRoutes(
           detections,
           distanceThreshold,
         );
-        final int originalWidth = widget.processedResult["image_width"];
-        final int originalHeight = widget.processedResult["image_height"];
+
 
         Map<String, int> detectionToRoute = {};
         for (
@@ -207,7 +205,7 @@ class _ResultScreenState extends State<ResultScreen> {
                               onTap: () {
                                 _showImageGallery(
                                   context,
-                                  [origBytes, detectBytes],
+                                  [origBytes],
                                   0,
                                   backgroundColor,
                                   textColor,
@@ -532,20 +530,6 @@ class _ResultScreenState extends State<ResultScreen> {
               backgroundColor: backgroundColor,
               textColor: textColor,
             ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.ease;
-          var tween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 300),
       ),
     );
   }
