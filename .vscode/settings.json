@@ -1,6 +1,6 @@
 {
   "cmake.sourceDirectory": "C:/dev/projects/boulder_ai/boulder_ai/app/windows",
   "git.ignoreLimitWarning": true,
-  "dart.flutterSdkPath": "C:\\dev\\tools\\flutter-boulder-ai",
-  "postman.settings.dotenv-detection-notification-visibility": false
+  "postman.settings.dotenv-detection-notification-visibility": false,
+  "dart.flutterSdkPath": "C:\\dev\\tools\\flutter-boulder-ai"
 }

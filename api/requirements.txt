@@ -13,3 +13,4 @@ SQLAlchemy==1.4.46
 python-dotenv
 label-studio-ml
 django
+segment-anything
