@@ -14,3 +14,4 @@ python-dotenv
 label-studio-ml
 django
 segment-anything
+albumentations

@@ -2,7 +2,7 @@ train: ./datasets/images/train
 val: ./datasets/images/val
 test: ./datasets/images/test
 
-nc: 10
+nc: 12
 names:
   [
     "black",
@@ -15,4 +15,6 @@ names:
     "white",
     "wood",
     "yellow",
+    "dark-green",
+    "black-white",
   ]
