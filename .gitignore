@@ -50,3 +50,4 @@ app.*.map.json
 venv/
 *.pt
 *.db
+.env
