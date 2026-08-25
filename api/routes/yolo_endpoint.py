@@ -1,143 +1,138 @@
-from sklearn.cluster import DBSCAN
-import numpy as np
-from extensions import db
-from flask import Blueprint, app, json, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-import cv2
-import io
-from PIL import Image
 import base64
-from ultralytics import YOLO, SAM
+import io
+import os
+
+import cv2
+import numpy as np
+from flask import Blueprint, json, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from PIL import Image
+
+from extensions import db
 from models.models import Analysis
+from vision.classes import DETECTION_CLASSES
+from vision.color_extraction import extract_color
+from vision.route_grouping import group_routes
 
-sam_model = SAM('sam2_b.pt')
-model = YOLO('./weights/best.pt')
-yolo_bp = Blueprint('yolo_bp', __name__)
+yolo_bp = Blueprint("yolo_bp", __name__)
 
-CLASS_NAMES = [
-    "black",
-    "blue",
-    "grey",
-    "orange",
-    "purple",
-    "red",
-    "turquoise",
-    "white",
-    "wood",
-    "yellow",
-]
+# Modelle werden beim ersten Request geladen, nicht beim Import: der Server
+# startet auch ohne Gewichte und meldet dann einen klaren Fehler statt eines
+# Import-Absturzes.
+_models = {}
 
-def group_detections_into_routes_by_color(
-    detections, threshold, min_grip_count=3, ignored_class_ids=None
-):
-    if ignored_class_ids is None:
-        ignored_class_ids = set()
 
-    detections_by_class = {}
-    for det in detections:
-        cls_id = det["class"]
-        if cls_id in ignored_class_ids:
-            continue
-        bbox = det["bbox"]
-        x1, y1, x2, y2 = bbox
-        center_x = (x1 + x2) / 2
-        center_y = (y1 + y2) / 2
-        det["_center"] = (center_x, center_y)
-        detections_by_class.setdefault(cls_id, []).append(det)
+def _get_yolo():
+    if "yolo" not in _models:
+        from ultralytics import YOLO
 
-    routes = []
-    for cls_id, group in detections_by_class.items():
-        n = len(group)
-        visited = [False] * n
+        weights = os.getenv(
+            "WEIGHTS_PATH",
+            os.path.join(os.path.dirname(__file__), "..", "weights", "best.pt"),
+        )
+        if not os.path.exists(weights):
+            raise FileNotFoundError(
+                f"Keine Modellgewichte unter {weights}. Training siehe README, "
+                "Pfad per WEIGHTS_PATH übersteuerbar."
+            )
+        _models["yolo"] = YOLO(weights)
+    return _models["yolo"]
 
-        for i in range(n):
-            if not visited[i]:
-                component = []
-                stack = [i]
-                visited[i] = True
-                while stack:
-                    cur = stack.pop()
-                    component.append(group[cur])
-                    cur_center = group[cur]["_center"]
-                    for j in range(n):
-                        if not visited[j]:
-                            dx = cur_center[0] - group[j]["_center"][0]
-                            dy = cur_center[1] - group[j]["_center"][1]
-                            dist = (dx * dx + dy * dy) ** 0.5
-                            if dist < threshold:
-                                visited[j] = True
-                                stack.append(j)
-                if len(component) >= min_grip_count:
-                    routes.append(component)
-    return routes
+
+def _get_sam():
+    if os.getenv("USE_SAM", "1") != "1":
+        return None
+    if "sam" not in _models:
+        from ultralytics import SAM
+
+        _models["sam"] = SAM(os.getenv("SAM_WEIGHTS", "sam2.1_b.pt"))
+    return _models["sam"]
+
+
+def _segment(img_rgb, detections):
+    """SAM-Masken je Bounding Box als Polygon an die Detektionen hängen."""
+    sam = _get_sam()
+    if sam is None or not detections:
+        return
+    bboxes = [det["bbox"] for det in detections]
+    results = sam.predict(source=img_rgb, bboxes=bboxes, verbose=False)
+    masks = getattr(results[0], "masks", None)
+    if masks is None:
+        return
+    # zip statt Laufindex: liefert SAM weniger Masken als Boxen, bleiben die
+    # restlichen Detektionen einfach ohne Segmentierung statt zu crashen.
+    for det, mask in zip(detections, masks):
+        mask_np = np.asarray(mask.data.cpu().numpy()).squeeze()
+        mask_uint8 = (mask_np > 0.5).astype(np.uint8) * 255
+        contours, _ = cv2.findContours(
+            mask_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
+        if contours:
+            contour = max(contours, key=cv2.contourArea).reshape(-1, 2)
+            det["segmentation"] = contour.tolist()
+
 
 @yolo_bp.route("/process", methods=["POST"])
 @jwt_required(optional=False)
 def process_image():
     user_id = get_jwt_identity()
 
-    file = request.files['image']
-    in_memory_file = io.BytesIO(file.read())
-    img = Image.open(in_memory_file).convert('RGB')
+    if "image" not in request.files:
+        return jsonify({"msg": "Bilddatei fehlt (Feld 'image')"}), 400
+
+    file = request.files["image"]
+    img = Image.open(io.BytesIO(file.read())).convert("RGB")
     img = np.array(img)
+    img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
-    if img.shape[2] == 3:
-        img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    else:
-        img_bgr = img
+    _, orig_buffer = cv2.imencode(".jpg", img_bgr)
+    orig_base64 = base64.b64encode(orig_buffer).decode("utf-8")
 
-    _, orig_buffer = cv2.imencode('.jpg', img_bgr)
-    orig_base64 = base64.b64encode(orig_buffer).decode('utf-8')
+    try:
+        model = _get_yolo()
+    except FileNotFoundError as e:
+        return jsonify({"msg": str(e)}), 503
 
-    results = model.predict(source=img_bgr, conf=0.4)
+    conf = float(os.getenv("DETECT_CONF", "0.4"))
+    results = model.predict(source=img_bgr, conf=conf, verbose=False)
+
     detections = []
-    yolo_output = img_bgr.copy()
-
     for result in results:
         for box in result.boxes:
             cls_id = int(box.cls[0])
-            conf = float(box.conf[0])
-            x1, y1, x2, y2 = box.xyxy[0]
-            detections.append({
-                "class": cls_id,
-                "class_name": CLASS_NAMES[cls_id] if cls_id < len(CLASS_NAMES) else "unknown",
-                "confidence": conf,
-                "bbox": [float(x1), float(y1), float(x2), float(y2)]
-            })
+            x1, y1, x2, y2 = [float(v) for v in box.xyxy[0]]
+            detections.append(
+                {
+                    "det_class": DETECTION_CLASSES[cls_id]
+                    if cls_id < len(DETECTION_CLASSES)
+                    else "hold",
+                    "confidence": float(box.conf[0]),
+                    "bbox": [x1, y1, x2, y2],
+                }
+            )
 
-    image_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-    bboxes = [det["bbox"] for det in detections]
-    results_sam = sam_model.predict(source=image_rgb, bboxes=bboxes)
+    _segment(img, detections)
 
-    i=0
+    # Farbe aus den Pixeln bestimmen. class/class_name bleiben als Aliase auf
+    # die Farbe erhalten, damit ältere App-Stände weiter funktionieren.
     for det in detections:
-        mask = results_sam[0].masks[i]
-        i+=1
-        mask_np = np.array(mask.cpu().numpy().data).squeeze()
-        mask_uint8 = (mask_np.astype(np.uint8)) * 255
-        contours, _ = cv2.findContours(mask_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if contours:
-            contour = max(contours, key=cv2.contourArea)
-            contour = contour.reshape(-1, 2)
-            polygon = contour.tolist()
-            det["segmentation"] = polygon
-
-
-
-
-
-    _, yolo_buffer = cv2.imencode('.jpg', yolo_output)
-    yolo_base64 = base64.b64encode(yolo_buffer).decode('utf-8')
+        color = extract_color(
+            img_bgr, bbox=det["bbox"], polygon=det.get("segmentation")
+        )
+        det["color"] = color
+        det["class"] = color["index"]
+        det["class_name"] = color["name"]
+        det["color_hex"] = color["hex"]
 
     height, width = img_bgr.shape[:2]
-    routes = group_detections_into_routes_by_color(detections, threshold=min(width, height) * 0.3, min_grip_count=3)
+    routes = group_routes(detections, width, height)
 
     response = {
         "original_image": orig_base64,
         "detections": detections,
         "routes": routes,
         "image_width": width,
-        "image_height": height
+        "image_height": height,
     }
 
     if user_id is not None:

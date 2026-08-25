@@ -1,17 +1,11 @@
 services:
-  ml_backend:
+  api:
     build: ./api
-    command: label-studio-ml start yolo_backend_wsgi --host 0.0.0.0 --port ${ML_BACKEND_PORT}
-    container_name: ml_backend
+    container_name: boulder_ai_api
+    command: python server.py
     ports:
-      - "${ML_BACKEND_PORT}:${ML_BACKEND_PORT}"
+      - "${SERVER_PORT:-5000}:${SERVER_PORT:-5000}"
     env_file: .env
-
-
-  server:
-    build: ./api
-    container_name: server
-    command: python server.py --port ${SERVER_PORT}
-    ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
-    env_file: .env
+    volumes:
+      - ./api/weights:/api/weights
+      - ./api/instance:/api/instance

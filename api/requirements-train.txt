@@ -1,0 +1,3 @@
+# Nur fürs Datenziehen/Training auf dem Trainingsrechner nötig
+-r requirements.txt
+roboflow>=1.1

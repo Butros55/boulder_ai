@@ -48,6 +48,7 @@ class _ResultScreenState extends State<ResultScreen> {
         final Color accentColor = const Color(0xFF7F5AF0);
         final Color textColor = Colors.white;
 
+        // Fallback für alte Backend-Stände; wird unten aus color_hex der API-Antwort überschrieben.
         Map<int, Color> classColorMap = {
           0: Colors.black,
           1: Colors.blue,
@@ -59,9 +60,14 @@ class _ResultScreenState extends State<ResultScreen> {
           7: Colors.white,
           8: const Color(0xFF8D6E63),
           9: Colors.yellow,
+          10: Colors.green,
+          11: Colors.pink,
         };
 
-        final List<String> classNames = ["black", "blue", "grey", "orange", "purple", "red", "turquoise", "white", "wood", "yellow"];
+        final Map<int, String> classNames = {
+          0: "black", 1: "blue", 2: "grey", 3: "orange", 4: "purple", 5: "red",
+          6: "turquoise", 7: "white", 8: "wood", 9: "yellow", 10: "green", 11: "pink",
+        };
 
         Uint8List origBytes;
         try {
@@ -76,6 +82,18 @@ class _ResultScreenState extends State<ResultScreen> {
         }
 
         final List<dynamic> detections = widget.processedResult["detections"] ?? [];
+
+        // Farbe und Name pro Klasse aus der API-Antwort übernehmen, wenn vorhanden
+        for (var det in detections) {
+          final int clsId = det["class"] ?? 0;
+          final dynamic hex = det["color_hex"] ?? det["color"]?["hex"];
+          if (hex is String) {
+            final parsed = int.tryParse(hex.replaceFirst('#', ''), radix: 16);
+            if (parsed != null) classColorMap[clsId] = Color(0xFF000000 | parsed);
+          }
+          final dynamic name = det["class_name"] ?? det["color"]?["name"];
+          if (name is String) classNames[clsId] = name;
+        }
         final int originalWidth = widget.processedResult["image_width"];
         final int originalHeight = widget.processedResult["image_height"];
 
@@ -381,8 +399,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                                               final clsId = entry.key;
                                                               final cStats = entry.value;
                                                               final avgConf = cStats.sumConf / cStats.count;
-                                                              final String name =
-                                                                  (clsId < classNames.length) ? classNames[clsId] : 'Unbekannt #$clsId';
+                                                              final String name = classNames[clsId] ?? 'Unbekannt #$clsId';
                                                               final Color labelColor = classColorMap[clsId] ?? Colors.white70;
 
                                                               return Padding(

@@ -51,3 +51,7 @@ venv/
 *.pt
 *.db
 .env
+# Daten und Trainingsartefakte
+api/datasets/
+api/instance/
+runs/

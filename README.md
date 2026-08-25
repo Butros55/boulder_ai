@@ -3,131 +3,74 @@
 [![Flutter](https://img.shields.io/badge/Flutter-Framework-02569B?logo=flutter&logoColor=white)](https://flutter.dev/)
 [![Flask](https://img.shields.io/badge/Flask-Backend-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![YOLO](https://img.shields.io/badge/YOLO-Ultralytics-111111?logo=python&logoColor=white)](https://docs.ultralytics.com/)
-[![SAM](https://img.shields.io/badge/SAM-Segment%20Anything-6E40C9)](https://github.com/facebookresearch/segment-anything)
-[![SQLite](https://img.shields.io/badge/SQLite-DB-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![YOLO26](https://img.shields.io/badge/YOLO26-Ultralytics-111111?logo=python&logoColor=white)](https://docs.ultralytics.com/models/yolo26/)
+[![SAM](https://img.shields.io/badge/SAM_2.1-Segment%20Anything-6E40C9)](https://docs.ultralytics.com/models/sam-2/)
 
-**Boulder AI** ist ein Prototyp aus **Flutter App** (`app/`) + **Python/Flask Backend** (`api/`) für die Analyse von Boulder-/Kletterwand-Fotos:  
-Griffe werden per **YOLO** erkannt, per **SAM** segmentiert und anschließend (vereinfacht) zu Routen gruppiert. Ergebnisse werden pro Nutzer (JWT) in einer **SQLite**-DB gespeichert.
+**Boulder AI** analysiert Fotos von Boulder-/Kletterwänden: Griffe erkennen, segmentieren, nach Farbe zu Routen gruppieren. Flutter-App (`app/`) + Flask-Backend (`api/`), Ergebnisse pro Nutzer (JWT) in SQLite.
 
----
+## Pipeline (Stand 2026)
 
-## Inhalt
+1. **Detektion — YOLO26**, zwei Klassen: `hold` und `volume`. Die Farbe ist **keine** Modellklasse mehr.
+2. **Segmentierung — SAM 2.1** (optional, `USE_SAM=0` schaltet ab): Maske je Bounding Box.
+3. **Farbbestimmung — klassisch statt gelernt** (`api/vision/color_extraction.py`): k-means über die Pixel in der Maske im Lab-Raum, größtes Cluster = Grifffarbe, Mapping auf eine benannte Palette (`api/vision/classes.py`). Neue Grifffarbe = eine Zeile Palette, kein Retraining.
+4. **Routengruppierung** (`api/vision/route_grouping.py`): DBSCAN je Farbe über die Griffzentren.
 
-- [Überblick](#überblick)
-- [Features](#features)
-- [Projektstruktur](#projektstruktur)
-- [Voraussetzungen](#voraussetzungen)
-- [Quickstart](#quickstart)
-- [Konfiguration](#konfiguration)
-- [Modelle](#modelle)
-- [Backend starten (Docker)](#backend-starten-docker)
-- [App starten (Flutter)](#app-starten-flutter)
-- [Backend-URL für Mobile/Emulator](#backend-url-für-mobileemulator)
-- [Nutzung (Kurz)](#nutzung-kurz)
-- [API (Auszug)](#api-auszug)
-- [Training (optional)](#training-optional)
-- [Troubleshooting](#troubleshooting)
-
----
-
-## Überblick
-
-- **Frontend:** Flutter App mit Login/Registrierung, Kamera/Galerie, Ergebnis-Overlay, Analyse-Historie  
-- **Backend:** Flask REST API mit JWT Auth und SQLite Persistence  
-- **ML:** YOLO für Detektion, SAM für Segmentierung (Weights nicht im Repo)
-
-## Features
-
-- Auth (Register/Login) mit JWT
-- Bildanalyse + Visualisierung der Griffe
-- Speichern der letzten Analysen pro Nutzer
-- Docker-ready Backend
+Warum der Umbau: Das alte Modell lernte 12 Farbklassen direkt — fragil bei Gym-Beleuchtung, und jede neue Farbe brauchte Retraining. Mit `hold`/`volume` als einzigen Klassen sind außerdem alle öffentlichen Kletter-Datasets als Trainingsdaten nutzbar, egal welche Farbklassen sie haben.
 
 ## Projektstruktur
 
 ```text
 .
-├─ api/                # Flask API + ML-Inferenz
-├─ app/                # Flutter App
-├─ docker-compose.yml  # Backend-Services
-├─ .env.example        # Beispiel-Konfiguration
-└─ start_backend.py    # Optionales Startskript
+├─ api/
+│  ├─ routes/            # Flask-Blueprints (auth, analysis, yolo_endpoint)
+│  ├─ vision/            # Klassen/Palette, Farbextraktion, Routengruppierung
+│  ├─ scripts/           # prepare_dataset.py (Roboflow Universe -> merged Dataset)
+│  ├─ tests/             # pytest für die vision-Module
+│  ├─ train.py           # YOLO26-Training
+│  └─ weights/           # best.pt (nicht im Repo)
+├─ app/                  # Flutter App
+├─ docker-compose.yml
+└─ .env.example
 ```
 
-## Voraussetzungen
-
-**Backend (empfohlen über Docker):**
-- Docker Desktop (mit Compose)
-
-**Frontend:**
-- Flutter SDK (passend zu `app/pubspec.yaml`)
-
-## Quickstart
-
-1) `.env` anlegen  
-2) Modelldateien hinzufügen  
-3) Backend starten  
-4) App starten  
-
-Details siehe die folgenden Abschnitte.
-
-## Konfiguration
-
-Erstelle eine `.env` im Repo-Root:
-
-- macOS/Linux:
-  ```bash
-  cp .env.example .env
-  ```
-- Windows (PowerShell):
-  ```powershell
-  Copy-Item .env.example .env
-  ```
-
-Wichtige Variablen in `.env`:
-
-- `SERVER_PORT` (Standard: `5000`)
-- `ML_BACKEND_PORT` (Standard: `9090`)
-- `SQLALCHEMY_DATABASE_URI` (Standard: `sqlite:///boulder-ai.db`)
-- `JWT_SECRET_KEY` (**ändern**, sobald mehr als lokal genutzt)
-
-## Modelle
-
-Das Backend erwartet folgende Dateien (nicht im Repo):
-
-- YOLO Gewichte: `api/weights/best.pt`
-- SAM Checkpoint: `api/sam2_b.pt`
-
-Hinweis: `*.pt` ist in `.gitignore` ausgeschlossen – die Dateien musst du lokal hinzufügen (oder per Volume mounten).
-
-## Backend starten (Docker)
-
-Im Repo-Root:
+## Quickstart Backend
 
 ```bash
+cp .env.example .env     # JWT_SECRET_KEY setzen!
 docker compose up --build
 ```
 
-**Services:**
-- `server`: Flask API auf `http://localhost:5000`  
-  _Hinweis:_ Port ist aktuell in `api/server.py` auf `5000` fixiert.  
-  `SERVER_PORT` sollte daher `5000` sein oder du passt `api/server.py` an.
-- `ml_backend`: Label-Studio-ML Backend (Port über `ML_BACKEND_PORT`, optional/experimentell)
+Ohne Docker: `cd api && pip install -r requirements.txt && python server.py`
 
-Stoppen:
+Ohne `api/weights/best.pt` startet der Server trotzdem; `/process` antwortet dann mit 503 und einem Hinweis. Die SAM-Gewichte lädt Ultralytics beim ersten Aufruf selbst herunter.
 
-```bash
-docker compose down
-```
+## Trainingsdaten besorgen
 
-Optionales Wrapper-Skript:
+Es gibt keine eigenen versionierten Trainingsdaten — das Dataset wird aus öffentlichen Roboflow-Universe-Quellen gebaut (u. a. `rock-climbing-hold-detection`, ~4.3k Bilder, und zwei Holds-und-Volumes-Datasets):
 
 ```bash
-python start_backend.py
+cd api
+pip install -r requirements-train.txt
+# ROBOFLOW_API_KEY in .env eintragen (kostenloser Account -> Settings -> API Key)
+python scripts/prepare_dataset.py
 ```
 
-## App starten (Flutter)
+Ergebnis: `api/datasets/merged/` mit `data.yaml` (Klassen `hold`, `volume`), alle Quellklassen automatisch remappt. Quellen stehen unter eigenen Lizenzen (i. d. R. CC BY 4.0) — bei Veröffentlichung nennen.
+
+## Training
+
+Braucht eine GPU (lokal oder Colab):
+
+```bash
+cd api
+python train.py --model yolo26s.pt --epochs 120
+# danach:
+cp runs/detect/boulder-holds-yolo26/weights/best.pt weights/best.pt
+```
+
+`--model yolo26n.pt` für schnelle Experimente, `yolo26m/l/x.pt` für mehr Genauigkeit.
+
+## App starten
 
 ```bash
 cd app
@@ -135,62 +78,51 @@ flutter pub get
 flutter run
 ```
 
-## Backend-URL für Mobile/Emulator
-
-Die App nutzt aktuell **fest** `http://127.0.0.1:5000` (z. B. in `app/lib/util/image_processor.dart` sowie den Login/Register-Screens).
-
-- Flutter Web/Desktop lokal: `127.0.0.1` passt meist.
-- Android Emulator: oft `http://10.0.2.2:5000` statt `127.0.0.1`.
-- Physisches Gerät: Host-IP im WLAN nutzen (Firewall/Portfreigabe beachten).
-
-## Nutzung (Kurz)
-
-1) Backend starten  
-2) App starten  
-3) In der App registrieren → einloggen  
-4) Bild aufnehmen oder auswählen → Analyse ansehen  
-5) Unter „Recent Analyses“ kannst du die letzten Analysen erneut öffnen  
+Backend-URL: Android-Emulator `http://10.0.2.2:5000`, iOS-Simulator `http://127.0.0.1:5000`, echtes Gerät → LAN-IP des Rechners.
 
 ## API (Auszug)
 
-Basis: `http://localhost:5000`
+- `POST /register`, `POST /login` → JWT
+- `POST /process` (multipart `image`, JWT) →
 
-- `POST /register` – `{ "username": "...", "password": "..." }`
-- `POST /login` – `{ "username": "...", "password": "..." }` → `access_token`
-- `POST /process` – `multipart/form-data` (`image=@file`) + `Authorization: Bearer <token>`
-- `GET /analyses` – `Authorization: Bearer <token>` → letzte Analysen + Gesamtanzahl
-
-Beispiel (cURL):
-
-```bash
-curl -s -X POST http://localhost:5000/register \
-  -H "Content-Type: application/json" \
-  -d '{"username":"demo","password":"demo"}'
-
-curl -s -X POST http://localhost:5000/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"demo","password":"demo"}'
-# -> {"access_token":"<TOKEN>"}
-
-curl -X POST http://localhost:5000/process \
-  -H "Authorization: Bearer <TOKEN>" \
-  -F "image=@./path/to/image.jpg"
+```json
+{
+  "detections": [{
+    "det_class": "hold",
+    "confidence": 0.91,
+    "bbox": [x1, y1, x2, y2],
+    "segmentation": [[x, y], ...],
+    "color": {"name": "red", "hex": "#D32F2F", "index": 5, "confidence": 0.74},
+    "class": 5, "class_name": "red", "color_hex": "#D32F2F"
+  }],
+  "routes": [[<detections>], ...],
+  "original_image": "<base64>", "image_width": 4032, "image_height": 3024
+}
 ```
 
-## Training (optional)
+`class`/`class_name` sind Kompatibilitäts-Aliase auf die Farbe (alte App-Stände funktionieren weiter).
 
-- Dataset-Konfiguration: `api/data.yaml`
-- Training-Skript: `api/train.py` (Ultralytics)
+## Konfiguration (.env)
 
-Das Repo enthält keine Trainingsdaten/Weights – du musst Pfade/Dateinamen ggf. an deine Umgebung anpassen.
+| Variable | Zweck | Default |
+| --- | --- | --- |
+| `SERVER_PORT` | API-Port | `5000` |
+| `SQLALCHEMY_DATABASE_URI` | DB | `sqlite:///boulder-ai.db` |
+| `JWT_SECRET_KEY` | Token-Signierung | — (setzen!) |
+| `WEIGHTS_PATH` | YOLO-Gewichte | `./weights/best.pt` |
+| `DETECT_CONF` | Konfidenzschwelle | `0.4` |
+| `USE_SAM` | Segmentierung an/aus | `1` |
+| `SAM_WEIGHTS` | SAM-Variante | `sam2.1_b.pt` |
+| `ROBOFLOW_API_KEY` | nur Datendownload | — |
 
-## Troubleshooting
+## Tests
 
-**401 Unauthorized**  
-→ Token fehlt/abgelaufen. Bitte erneut einloggen.
+```bash
+cd api && python -m pytest tests/ -v
+```
 
-**Keine Verbindung vom Emulator**  
-→ Verwende `http://10.0.2.2:5000` statt `127.0.0.1`.
+## Ideen / nächste Schritte
 
-**FileNotFoundError für Weights**  
-→ Stelle sicher, dass `api/weights/best.pt` und `api/sam2_b.pt` existieren.
+- **SAM 3 mit Textprompt** („climbing hold") als Detektor+Segmentierer in einem Schritt testen — könnte YOLO+SAM ersetzen oder als Auto-Labeler fürs eigene Feintuning dienen.
+- YOLO26n als TFLite direkt in die App exportieren → Inferenz ohne Server.
+- Eigene Gym-Fotos nachannotieren (Roboflow/CVAT haben SAM-Auto-Labeling eingebaut) und aufs merged Dataset drauftrainieren.
