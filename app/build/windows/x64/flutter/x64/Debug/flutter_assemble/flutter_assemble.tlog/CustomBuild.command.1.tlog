@@ -1,6 +1,6 @@
-^C:\DEV\PROJECTS\BOULDER_AI\APP\BUILD\WINDOWS\X64\CMAKEFILES\68FADCD2440625CFBD3645329C8945B8\FLUTTER_WINDOWS.DLL.RULE
+^C:\DEV\BOULDER_AI\APP\BUILD\WINDOWS\X64\CMAKEFILES\CC9C1CBAB7A662899EDB0AB40710A5DB\FLUTTER_WINDOWS.DLL.RULE
 setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E env FLUTTER_ROOT=C:\dev\tools\flutter-boulder-ai PROJECT_DIR=C:\dev\projects\boulder_ai\app FLUTTER_ROOT=C:\dev\tools\flutter-boulder-ai FLUTTER_EPHEMERAL_DIR=C:\dev\projects\boulder_ai\app\windows\flutter\ephemeral PROJECT_DIR=C:\dev\projects\boulder_ai\app FLUTTER_TARGET=C:\dev\projects\boulder_ai\app\lib\main.dart DART_OBFUSCATION=false TRACK_WIDGET_CREATION=true TREE_SHAKE_ICONS=false PACKAGE_CONFIG=C:\dev\projects\boulder_ai\app\.dart_tool\package_config.json C:/dev/tools/flutter-boulder-ai/packages/flutter_tools/bin/tool_backend.bat windows-x64 Debug
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E env FLUTTER_ROOT=C:\dev\tools\flutter PROJECT_DIR=C:\dev\boulder_ai\app FLUTTER_ROOT=C:\dev\tools\flutter FLUTTER_EPHEMERAL_DIR=C:\dev\boulder_ai\app\windows\flutter\ephemeral PROJECT_DIR=C:\dev\boulder_ai\app FLUTTER_TARGET=lib\main.dart DART_DEFINES=RkxVVFRFUl9WRVJTSU9OPTMuMzUuNg==,RkxVVFRFUl9DSEFOTkVMPXN0YWJsZQ==,RkxVVFRFUl9HSVRfVVJMPWh0dHBzOi8vZ2l0aHViLmNvbS9mbHV0dGVyL2ZsdXR0ZXIuZ2l0,RkxVVFRFUl9GUkFNRVdPUktfUkVWSVNJT049OWY0NTVkMjQ4Ng==,RkxVVFRFUl9FTkdJTkVfUkVWSVNJT049ZDI5MTM2MzJhNA==,RkxVVFRFUl9EQVJUX1ZFUlNJT049My45LjI= DART_OBFUSCATION=false TRACK_WIDGET_CREATION=true TREE_SHAKE_ICONS=false PACKAGE_CONFIG=C:\dev\boulder_ai\app\.dart_tool\package_config.json C:/dev/tools/flutter/packages/flutter_tools/bin/tool_backend.bat windows-x64 Debug
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
@@ -8,7 +8,7 @@ endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd
-^C:\DEV\PROJECTS\BOULDER_AI\APP\BUILD\WINDOWS\X64\CMAKEFILES\D29929F232B35DAD5D991C7693267767\FLUTTER_ASSEMBLE.RULE
+^C:\DEV\BOULDER_AI\APP\BUILD\WINDOWS\X64\CMAKEFILES\4A2248E08420056F2F2C82B0B5289330\FLUTTER_ASSEMBLE.RULE
 setlocal
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
@@ -16,9 +16,9 @@ endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd
-^C:\DEV\PROJECTS\BOULDER_AI\APP\WINDOWS\FLUTTER\CMAKELISTS.TXT
+^C:\DEV\BOULDER_AI\APP\WINDOWS\FLUTTER\CMAKELISTS.TXT
 setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/projects/boulder_ai/app/windows -BC:/dev/projects/boulder_ai/app/build/windows/x64 --check-stamp-file C:/dev/projects/boulder_ai/app/build/windows/x64/flutter/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/boulder_ai/app/windows -BC:/dev/boulder_ai/app/build/windows/x64 --check-stamp-file C:/dev/boulder_ai/app/build/windows/x64/flutter/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

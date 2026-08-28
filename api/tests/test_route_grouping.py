@@ -45,6 +45,46 @@ def test_routes_sorted_by_size():
     assert [len(r) for r in routes] == [6, 3]
 
 
+def test_similar_hue_bridges_palette_boundary():
+    # ocker (wood) und gelb liegen im Farbton nah beieinander: eine Kette,
+    # die die Palette in zwei Namen quantisiert, bleibt EINE Route
+    def det_lab(x, y, name, hue_ab):
+        d = det(x, y, name)
+        import numpy as np
+        a = 128 + 30 * np.cos(np.radians(hue_ab))
+        b = 128 + 30 * np.sin(np.radians(hue_ab))
+        d["color"]["lab"] = [140.0, float(a), float(b)]
+        return d
+
+    dets = [
+        det_lab(100, 500, "wood", 70),
+        det_lab(110, 420, "yellow", 84),
+        det_lab(95, 340, "wood", 74),
+        det_lab(105, 260, "yellow", 86),
+    ]
+    routes = group_routes(dets, 1000, 1000)
+    assert len(routes) == 1
+    assert len(routes[0]) == 4
+
+
+def test_different_hue_still_separates():
+    def det_lab(x, y, name, hue_ab):
+        d = det(x, y, name)
+        import numpy as np
+        a = 128 + 40 * np.cos(np.radians(hue_ab))
+        b = 128 + 40 * np.sin(np.radians(hue_ab))
+        d["color"]["lab"] = [140.0, float(a), float(b)]
+        return d
+
+    # rot (33°) und blau (-72°) verschränkt: bleiben getrennte Routen
+    dets = (
+        [det_lab(100 + i * 80, 500 - i * 40, "red", 33) for i in range(3)]
+        + [det_lab(110 + i * 80, 505 - i * 40, "blue", -72) for i in range(3)]
+    )
+    routes = group_routes(dets, 1000, 1000)
+    assert len(routes) == 2
+
+
 def test_class_name_fallback_for_old_payloads():
     dets = [
         {"bbox": [0, 0, 20, 20], "class_name": "red"},

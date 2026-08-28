@@ -29,6 +29,9 @@ COLOR_PALETTE = [
     {"name": "yellow",    "hex": "#FBC02D"},
     {"name": "green",     "hex": "#388E3C"},
     {"name": "pink",      "hex": "#EC407A"},
+    # gedecktes Salbei/Mint, wie es viele Hallen für Volumes nutzen —
+    # ergänzt am 25.08.2026 nach Messung an eigenen Hallenfotos
+    {"name": "mint",      "hex": "#8FBCB0"},
 ]
 
 COLOR_INDEX = {c["name"]: i for i, c in enumerate(COLOR_PALETTE)}

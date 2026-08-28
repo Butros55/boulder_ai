@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\dev\projects\boulder_ai\app\windows\flutter\ephemeral\cpp_client_wrapper\core_implementations.cc">
+    <ClCompile Include="C:\dev\boulder_ai\app\windows\flutter\ephemeral\cpp_client_wrapper\core_implementations.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\dev\projects\boulder_ai\app\windows\flutter\ephemeral\cpp_client_wrapper\standard_codec.cc">
+    <ClCompile Include="C:\dev\boulder_ai\app\windows\flutter\ephemeral\cpp_client_wrapper\standard_codec.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\dev\projects\boulder_ai\app\windows\flutter\ephemeral\cpp_client_wrapper\plugin_registrar.cc">
+    <ClCompile Include="C:\dev\boulder_ai\app\windows\flutter\ephemeral\cpp_client_wrapper\plugin_registrar.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\dev\projects\boulder_ai\app\windows\flutter\CMakeLists.txt" />
+    <CustomBuild Include="C:\dev\boulder_ai\app\windows\flutter\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{67916496-C798-3A85-A6CD-22F2E08F3172}</UniqueIdentifier>
+      <UniqueIdentifier>{CAA50FFA-F7C2-334F-AA7E-98BDFD2871B3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{41727CD6-C017-3F3E-BDC8-D68DEA28B635}</UniqueIdentifier>
+      <UniqueIdentifier>{9BDC7046-C423-3009-971C-5FD340BFCB77}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

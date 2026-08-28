@@ -9,16 +9,13 @@ Ablauf je Detektion:
    Lab-Anker, unbunte (Chroma unter Schwelle) über die Helligkeit.
 """
 
+from pathlib import Path
+
 import cv2
 import numpy as np
 
 from vision.classes import ACHROMATIC, COLOR_INDEX, COLOR_PALETTE
 
-# Unterhalb dieser Buntheit (Abstand vom Neutralpunkt in a/b) gilt eine Farbe
-# als schwarz/grau/weiß. Holz liegt bei ~20-30 und bleibt damit "bunt".
-CHROMA_THRESHOLD = 14.0
-# L-Abstand zählt schwächer als der Farbstich: Beleuchtung ändert vor allem L.
-LIGHTNESS_WEIGHT = 0.5
 MIN_PIXELS = 20
 
 _anchors_cache = None
@@ -31,14 +28,33 @@ def _hex_to_bgr(hex_str):
 
 
 def anchors():
-    """Lab-Anker (OpenCV-8-Bit-Skalierung) je Palettenfarbe, aus hex berechnet."""
+    """Lab-Anker je Palettenfarbe. Grundlage sind die hex-Werte; liegt eine
+    Kalibrierung aus echten Hallenfotos vor (vision/farb_anker.json, erzeugt
+    von scripts/kalibriere_farben.py), übersteuert sie die Messwerte —
+    die Anzeige-Hexfarbe bleibt davon unberührt."""
     global _anchors_cache
     if _anchors_cache is None:
         px = np.array([[_hex_to_bgr(c["hex"]) for c in COLOR_PALETTE]], dtype=np.uint8)
         lab = cv2.cvtColor(px, cv2.COLOR_BGR2LAB)[0].astype(np.float32)
-        _anchors_cache = [
-            {"name": c["name"], "lab": lab[i]} for i, c in enumerate(COLOR_PALETTE)
-        ]
+        kalibriert = {}
+        kal_datei = Path(__file__).resolve().parent / "farb_anker.json"
+        if kal_datei.exists():
+            import json
+
+            kalibriert = json.loads(kal_datei.read_text(encoding="utf-8"))
+        _anchors_cache = []
+        for i, c in enumerate(COLOR_PALETTE):
+            l, a, b = [float(v) for v in lab[i]]
+            eintrag = {
+                "name": c["name"],
+                "l": l,
+                "chroma": ((a - 128.0) ** 2 + (b - 128.0) ** 2) ** 0.5,
+                "hue": np.degrees(np.arctan2(b - 128.0, a - 128.0)),
+            }
+            if c["name"] in kalibriert:
+                k = kalibriert[c["name"]]
+                eintrag.update(l=k["l"], chroma=k["chroma"], hue=k["hue"])
+            _anchors_cache.append(eintrag)
     return _anchors_cache
 
 
@@ -46,8 +62,12 @@ def _pixels_from_polygon(img_bgr, polygon):
     mask = np.zeros(img_bgr.shape[:2], dtype=np.uint8)
     pts = np.array(polygon, dtype=np.int32).reshape(-1, 2)
     cv2.fillPoly(mask, [pts], 255)
-    # Rand der Maske abtragen, damit Kantenpixel (Wand/Schatten) rausfallen
-    erode_px = max(1, int(0.03 * max(img_bgr.shape[:2])))
+    # Rand der Maske abtragen, damit Kantenpixel (Wand/Schatten) rausfallen.
+    # Skaliert mit der Polygongröße, nicht mit der Bildgröße — sonst löscht
+    # die Erosion kleine Griffmasken komplett und der Bbox-Fallback mischt
+    # Wandpixel in die Farbbestimmung.
+    poly_extent = min(int(pts[:, 0].ptp()), int(pts[:, 1].ptp()))
+    erode_px = int(np.clip(0.08 * poly_extent, 1, 25))
     mask = cv2.erode(mask, np.ones((erode_px, erode_px), np.uint8))
     return img_bgr[mask > 0]
 
@@ -87,24 +107,39 @@ def _dominant_lab(pixels_bgr):
 
 
 def _match_palette(lab_center):
+    """Weiches Scoring statt harter Chroma-Schwelle.
+
+    Hallenfarben sind oft gedeckt (blasses Türkis, mattes Rot) — eine harte
+    Schwelle kippt sie fälschlich nach grau/schwarz. Stattdessen konkurrieren
+    alle Anker: unbunte über Helligkeit plus Buntheits-Strafe, bunte über
+    Farbton (dominant) plus Helligkeit. Der Farbton bleibt auch bei schwacher
+    Sättigung und wechselnder Gym-Beleuchtung stabil, die Sättigung nicht.
+    """
     l, a, b = [float(v) for v in lab_center]
     chroma = ((a - 128.0) ** 2 + (b - 128.0) ** 2) ** 0.5
+    hue = float(np.degrees(np.arctan2(b - 128.0, a - 128.0)))
     candidates = []
     for anchor in anchors():
-        is_achromatic = anchor["name"] in ACHROMATIC
-        if chroma < CHROMA_THRESHOLD and not is_achromatic:
-            continue
-        if chroma >= CHROMA_THRESHOLD and is_achromatic:
-            continue
-        al, aa, ab = [float(v) for v in anchor["lab"]]
-        dist = (
-            (LIGHTNESS_WEIGHT * (l - al)) ** 2 + (a - aa) ** 2 + (b - ab) ** 2
-        ) ** 0.5
-        candidates.append((dist, anchor["name"]))
+        if anchor["name"] in ACHROMATIC:
+            # kalibrierte Anker-Chroma statt 0 annehmen: Warmweiß und
+            # Hallengrau sind im Kunstlicht leicht bunt und sollen dafür
+            # nicht aus dem Unbunt-Zweig fallen
+            score = (((l - anchor["l"]) / 35.0) ** 2
+                     + ((chroma - anchor["chroma"]) / 10.0) ** 2)
+        else:
+            hue_diff = abs(hue - anchor["hue"]) % 360.0
+            hue_diff = min(hue_diff, 360.0 - hue_diff)
+            score = (
+                (hue_diff / 20.0) ** 2
+                + ((l - anchor["l"]) / 50.0) ** 2
+                # Sättigung trennt z. B. gelb (kräftig) von wood (matt)
+                + ((chroma - anchor["chroma"]) / 30.0) ** 2
+            )
+        candidates.append((score, anchor["name"]))
     candidates.sort()
-    best_dist, best_name = candidates[0]
-    margin = candidates[1][0] - best_dist if len(candidates) > 1 else best_dist
-    return best_name, best_dist, margin
+    best_score, best_name = candidates[0]
+    margin = candidates[1][0] - best_score if len(candidates) > 1 else best_score
+    return best_name, best_score, margin
 
 
 def extract_color(img_bgr, bbox=None, polygon=None):
@@ -130,11 +165,14 @@ def extract_color(img_bgr, bbox=None, polygon=None):
     center, share = _dominant_lab(np.ascontiguousarray(pixels, dtype=np.uint8))
     name, dist, margin = _match_palette(center)
     # Konfidenz: wie klar dominiert das Cluster x wie eindeutig der Anker.
-    confidence = share * float(np.clip(margin / 40.0, 0.05, 1.0))
+    confidence = share * float(np.clip(margin / 1.5, 0.05, 1.0))
     entry = COLOR_PALETTE[COLOR_INDEX[name]]
     return {
         "name": name,
         "hex": entry["hex"],
         "index": COLOR_INDEX[name],
         "confidence": round(float(confidence), 3),
+        # gemessenes Lab-Zentrum (OpenCV-8-Bit-Skala) — erlaubt der
+        # Routengruppierung Farbvergleiche jenseits der Palettennamen
+        "lab": [round(float(v), 1) for v in center],
     }

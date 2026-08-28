@@ -48,6 +48,7 @@ app.*.map.json
 
 #custom
 venv/
+.venv/
 *.pt
 *.db
 .env

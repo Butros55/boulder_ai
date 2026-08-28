@@ -10,13 +10,16 @@ selbst bestimmt später vision/color_extraction.py aus den Pixeln.
 """
 
 import argparse
+from pathlib import Path
 
 
 def main():
     parser = argparse.ArgumentParser(description="Boulder AI Training (YOLO26)")
     parser.add_argument("--model", default="yolo26s.pt",
                         help="Basisgewichte: yolo26n/s/m/l/x.pt")
-    parser.add_argument("--data", default="./datasets/merged/data.yaml")
+    parser.add_argument("--data", default="./datasets/merged_clean/data.yaml",
+                        help="Dataset-YAML; Standard ist der leakfreie, "
+                             "gruppenbasierte Split")
     parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--imgsz", type=int, default=640)
     parser.add_argument("--batch", type=int, default=-1,
@@ -24,6 +27,9 @@ def main():
     parser.add_argument("--name", default="boulder-holds-yolo26")
     parser.add_argument("--device", default=None,
                         help="z. B. 0, cpu — leer lassen für Auto-Wahl")
+    parser.add_argument("--no-amp", action="store_true",
+                        help="Mixed Precision aus (reines FP32) — auf Pascal-"
+                             "GPUs wie der GTX 1070 schneller als FP16")
     args = parser.parse_args()
 
     from ultralytics import YOLO
@@ -36,6 +42,11 @@ def main():
         batch=args.batch,
         name=args.name,
         device=args.device,
+        amp=not args.no_amp,
+        # fester Ablageort im Repo; muss absolut sein, weil Ultralytics
+        # relative project-Pfade gegen die globale runs_dir-Einstellung
+        # aufloest (die hier noch auf das alte boulder_yolo zeigt)
+        project=str(Path(__file__).resolve().parent / "runs" / "detect"),
         # Farbe ist keine Klasse mehr: kräftige Farb-Augmentierung erlaubt
         hsv_h=0.05,
         hsv_s=0.7,
@@ -46,7 +57,9 @@ def main():
         fliplr=0.5,
         mosaic=1.0,
     )
-    metrics = model.val()
+    metrics = model.val(
+        project=str(Path(__file__).resolve().parent / "runs" / "detect"),
+    )
     print(f"Fertig. mAP50-95: {metrics.box.map:.3f}  mAP50: {metrics.box.map50:.3f}")
     print("Beste Gewichte: runs/detect/<name>/weights/best.pt -> nach api/weights/best.pt kopieren")
 

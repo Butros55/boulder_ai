@@ -4,16 +4,16 @@ events:
   -
     kind: "message-v1"
     backtrace:
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeDetermineSystem.cmake:205 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineSystem.cmake:205 (message)"
       - "CMakeLists.txt:3 (project)"
     message: |
-      The system is: Windows - 10.0.22631 - AMD64
+      The system is: Windows - 10.0.26200 - AMD64
   -
     kind: "message-v1"
     backtrace:
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
       - "CMakeLists.txt:3 (project)"
     message: |
       Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
@@ -23,10 +23,10 @@ events:
       
       The output was:
       0
-      MSBuild-Version 17.13.9+e0f243f1e f├╝r .NET Framework
-      Der Buildvorgang wurde am 25.02.2025 22:16:24 gestartet.
+      MSBuild-Version 17.14.51+25f168cee f├╝r .NET Framework
+      Der Buildvorgang wurde am 25.08.2026 18:07:47 gestartet.
       
-      Projekt "C:\\dev\\projects\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\3.30.5-msvc23\\CompilerIdCXX\\CompilerIdCXX.vcxproj" auf Knoten "1" (Standardziele).
+      Projekt "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj" auf Knoten "1" (Standardziele).
       PrepareForBuild:
         Das Verzeichnis "Debug\\" wird erstellt.
         Die strukturierte Ausgabe ist aktiviert. Die Formatierung der Compilerdiagnose spiegelt die Fehlerhierarchie wider. Weitere Informationen finden Sie unter https://aka.ms/cpp/structured-output.
@@ -35,25 +35,25 @@ events:
         "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" wird erstellt, da "AlwaysCreate" angegeben wurde.
         Aktualisieren des Timestamps von "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
       ClCompile:
-        C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
         CMakeCXXCompilerId.cpp
       Link:
-        C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
-        CompilerIdCXX.vcxproj -> C:\\dev\\projects\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\3.30.5-msvc23\\CompilerIdCXX\\CompilerIdCXX.exe
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.exe
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
         :VCEnd
-        CMAKE_CXX_COMPILER=C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\bin\\Hostx64\\x64\\cl.exe
+        CMAKE_CXX_COMPILER=C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe
       FinalizeBuildStatus:
         Die Datei "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" wird gel├Âscht.
         Aktualisieren des Timestamps von "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
-      Die Erstellung von Projekt "C:\\dev\\projects\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\3.30.5-msvc23\\CompilerIdCXX\\CompilerIdCXX.vcxproj" ist abgeschlossen (Standardziele).
+      Die Erstellung von Projekt "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj" ist abgeschlossen (Standardziele).
       
       Der Buildvorgang wurde erfolgreich ausgef├╝hrt.
           0 Warnung(en)
           0 Fehler
       
-      Verstrichene Zeit 00:00:00.70
+      Verstrichene Zeit 00:00:00.38
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -61,19 +61,19 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
       
       The CXX compiler identification is MSVC, found in:
-        C:/dev/projects/boulder_ai/app/build/windows/x64/CMakeFiles/3.30.5-msvc23/CompilerIdCXX/CompilerIdCXX.exe
+        C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/3.31.6-msvc6/CompilerIdCXX/CompilerIdCXX.exe
       
   -
     kind: "try_compile-v1"
     backtrace:
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
       - "CMakeLists.txt:3 (project)"
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/dev/projects/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-vg19t2"
-      binary: "C:/dev/projects/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-vg19t2"
+      source: "C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-78dv1r"
+      binary: "C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-78dv1r"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -83,34 +83,34 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/dev/projects/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-vg19t2'
+        Change Dir: 'C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-78dv1r'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_b7656.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
-        MSBuild-Version 17.13.9+e0f243f1e f├╝r .NET Framework
-        Der Buildvorgang wurde am 25.02.2025 22:16:26 gestartet.
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_9c202.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild-Version 17.14.51+25f168cee f├╝r .NET Framework
+        Der Buildvorgang wurde am 25.08.2026 18:07:48 gestartet.
         
-        Projekt "C:\\dev\\projects\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-vg19t2\\cmTC_b7656.vcxproj" auf Knoten "1" (Standardziele).
+        Projekt "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-78dv1r\\cmTC_9c202.vcxproj" auf Knoten "1" (Standardziele).
         PrepareForBuild:
-          Das Verzeichnis "cmTC_b7656.dir\\Debug\\" wird erstellt.
+          Das Verzeichnis "cmTC_9c202.dir\\Debug\\" wird erstellt.
           Die strukturierte Ausgabe ist aktiviert. Die Formatierung der Compilerdiagnose spiegelt die Fehlerhierarchie wider. Weitere Informationen finden Sie unter https://aka.ms/cpp/structured-output.
-          Das Verzeichnis "C:\\dev\\projects\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-vg19t2\\Debug\\" wird erstellt.
-          Das Verzeichnis "cmTC_b7656.dir\\Debug\\cmTC_b7656.tlog\\" wird erstellt.
+          Das Verzeichnis "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-78dv1r\\Debug\\" wird erstellt.
+          Das Verzeichnis "cmTC_9c202.dir\\Debug\\cmTC_9c202.tlog\\" wird erstellt.
         InitializeBuildStatus:
-          "cmTC_b7656.dir\\Debug\\cmTC_b7656.tlog\\unsuccessfulbuild" wird erstellt, da "AlwaysCreate" angegeben wurde.
-          Aktualisieren des Timestamps von "cmTC_b7656.dir\\Debug\\cmTC_b7656.tlog\\unsuccessfulbuild".
+          "cmTC_9c202.dir\\Debug\\cmTC_9c202.tlog\\unsuccessfulbuild" wird erstellt, da "AlwaysCreate" angegeben wurde.
+          Aktualisieren des Timestamps von "cmTC_9c202.dir\\Debug\\cmTC_9c202.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_b7656.dir\\Debug\\\\" /Fd"cmTC_b7656.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.30\\Modules\\CMakeCXXCompilerABI.cpp"
-          Microsoft (R) C/C++-Optimierungscompiler Version 19.43.34808 f├╝r x64
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_9c202.dir\\Debug\\\\" /Fd"cmTC_9c202.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft (R) C/C++-Optimierungscompiler Version 19.44.35228 f├╝r x64
           Copyright (C) Microsoft Corporation. Alle Rechte vorbehalten.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_b7656.dir\\Debug\\\\" /Fd"cmTC_b7656.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.30\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_9c202.dir\\Debug\\\\" /Fd"cmTC_9c202.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\dev\\projects\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-vg19t2\\Debug\\cmTC_b7656.exe" /INCREMENTAL /ILK:"cmTC_b7656.dir\\Debug\\cmTC_b7656.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/dev/projects/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-vg19t2/Debug/cmTC_b7656.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/dev/projects/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-vg19t2/Debug/cmTC_b7656.lib" /MACHINE:X64  /machine:x64 cmTC_b7656.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_b7656.vcxproj -> C:\\dev\\projects\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-vg19t2\\Debug\\cmTC_b7656.exe
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-78dv1r\\Debug\\cmTC_9c202.exe" /INCREMENTAL /ILK:"cmTC_9c202.dir\\Debug\\cmTC_9c202.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-78dv1r/Debug/cmTC_9c202.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-78dv1r/Debug/cmTC_9c202.lib" /MACHINE:X64  /machine:x64 cmTC_9c202.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_9c202.vcxproj -> C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-78dv1r\\Debug\\cmTC_9c202.exe
         FinalizeBuildStatus:
-          Die Datei "cmTC_b7656.dir\\Debug\\cmTC_b7656.tlog\\unsuccessfulbuild" wird gel├Âscht.
-          Aktualisieren des Timestamps von "cmTC_b7656.dir\\Debug\\cmTC_b7656.tlog\\cmTC_b7656.lastbuildstate".
-        Die Erstellung von Projekt "C:\\dev\\projects\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-vg19t2\\cmTC_b7656.vcxproj" ist abgeschlossen (Standardziele).
+          Die Datei "cmTC_9c202.dir\\Debug\\cmTC_9c202.tlog\\unsuccessfulbuild" wird gel├Âscht.
+          Aktualisieren des Timestamps von "cmTC_9c202.dir\\Debug\\cmTC_9c202.tlog\\cmTC_9c202.lastbuildstate".
+        Die Erstellung von Projekt "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-78dv1r\\cmTC_9c202.vcxproj" ist abgeschlossen (Standardziele).
         
         Der Buildvorgang wurde erfolgreich ausgef├╝hrt.
             0 Warnung(en)
@@ -122,14 +122,14 @@ events:
   -
     kind: "message-v1"
     backtrace:
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
       - "CMakeLists.txt:3 (project)"
     message: |
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
-        linker tool for 'CXX': C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.43.34808/bin/HostX64/x64/link.exe
+        linker tool for 'CXX': C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe
         implicit libs: []
         implicit objs: []
         implicit dirs: []
@@ -139,12 +139,844 @@ events:
   -
     kind: "message-v1"
     backtrace:
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
-      - "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
       - "CMakeLists.txt:3 (project)"
     message: |
-      Running the CXX compiler's linker: "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.43.34808/bin/HostX64/x64/link.exe" "-v"
-      Microsoft (R) Incremental Linker Version 14.43.34808.0
+      Running the CXX compiler's linker: "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.44.35228.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+...
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      The system is: Windows - 10.0.26200 - AMD64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCXXCompilerId.cpp.in"
+    candidate_directories:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/"
+    found: "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeCXXCompilerId.cpp.in"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Program Files\\Git\\mingw64\\bin"
+        - "C:\\Program Files\\Git\\usr\\bin"
+        - "C:\\Users\\geret\\bin"
+        - "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\libnvvp"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\libnvvp"
+        - "C:\\Program Files (x86)\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files (x86)\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Microsoft\\jdk-11.0.20.8-hotspot\\bin"
+        - "C:\\Program Files (x86)\\Common Files\\Intel\\Shared Libraries\\redist\\intel64_win\\compiler"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\Windows\\System32\\OpenSSH"
+        - "C:\\Program Files\\dotnet"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm"
+        - "C:\\Program Files\\nodejs"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311\\Scripts"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311"
+        - "C:\\Users\\geret\\AppData\\Roaming\\.dotnet"
+        - "C:\\Users\\geret\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Users\\geret\\.dotnet\\tools"
+        - "C:\\Users\\geret\\AppData\\Roaming\\npm"
+        - "C:\\Users\\geret\\AppData\\Local\\Android\\Sdk\\platform-tools"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\WINDOWS\\system32\\config\\systemprofile\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Program Files\\Docker\\Docker\\resources\\bin"
+        - "C:\\Program Files\\Git LFS"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2025.2.0"
+        - "C:\\Program Files\\Git\\cmd"
+        - "C:\\Program Files\\cursor\\resources\\app\\bin"
+        - "C:\\Program Files\\GitHub CLI"
+        - "C:\\Program Files\\PowerShell\\7"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310\\Scripts"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310"
+        - "C:\\dev\\note-mvp\\backend\\.venv\\Scripts"
+        - "C:\\Users\\geret\\.local\\bin"
+        - "C:\\Program Files\\PowerShell\\7"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\libnvvp"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\libnvvp"
+        - "C:\\Program Files (x86)\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files (x86)\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Program Files\\Microsoft\\jdk-11.0.20.8-hotspot\\bin"
+        - "C:\\Program Files (x86)\\Common Files\\Intel\\Shared Libraries\\redist\\intel64_win\\compiler"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\Windows\\System32\\OpenSSH"
+        - "C:\\Program Files\\dotnet"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\Program Files\\Git\\cmd"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "C:\\U"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\dev\\tools\\flutter\\bin"
+        - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.2.4\\bin"
+        - "C:\\Users\\geret\\AppData\\Local\\Pandoc"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\MiKTeX\\miktex\\bin\\x64"
+        - "C:\\Users\\geret\\AppData\\Local\\PowerToys"
+        - "C:\\Program Files\\Graphviz\\bin"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Ollama"
+        - "C:\\Users\\geret\\AppData\\Local\\Microsoft\\WinGet\\Links"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v25.2.1"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v18.20.0"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v18.17.1"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310"
+        - "C:\\Program Files\\Git\\mingw64\\bin"
+      CMAKE_INSTALL_PREFIX: "$<TARGET_FILE_DIR:boulder_ai>"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: /DWIN32;/D_WINDOWS;/W3;/GR;/EHsc
+      Id flags:  
+      
+      The output was:
+      0
+      MSBuild-Version 17.14.51+25f168cee f├╝r .NET Framework
+      Der Buildvorgang wurde am 25.08.2026 18:09:34 gestartet.
+      
+      Projekt "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\4.1.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" auf Knoten "1" (Standardziele).
+      PrepareForBuild:
+        Das Verzeichnis "Debug\\" wird erstellt.
+        Die strukturierte Ausgabe ist aktiviert. Die Formatierung der Compilerdiagnose spiegelt die Fehlerhierarchie wider. Weitere Informationen finden Sie unter https://aka.ms/cpp/structured-output.
+        Das Verzeichnis "Debug\\CompilerIdCXX.tlog\\" wird erstellt.
+      InitializeBuildStatus:
+        "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" wird erstellt, da "AlwaysCreate" angegeben wurde.
+        Aktualisieren des Timestamps von "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\4.1.2\\CompilerIdCXX\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Die Datei "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" wird gel├Âscht.
+        Aktualisieren des Timestamps von "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
+      Die Erstellung von Projekt "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\4.1.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" ist abgeschlossen (Standardziele).
+      
+      Der Buildvorgang wurde erfolgreich ausgef├╝hrt.
+          0 Warnung(en)
+          0 Fehler
+      
+      Verstrichene Zeit 00:00:00.46
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/4.1.2/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:37 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:65 (__resolve_tool_path)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:103 (__resolve_linker_path)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "_CMAKE_TOOL_WITH_PATH"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "link"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/"
+      - "C:/Program Files/Git/mingw64/bin/"
+      - "C:/Program Files/Git/usr/bin/"
+      - "C:/Users/geret/bin/"
+      - "C:/Program Files/Common Files/Oracle/Java/javapath/"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/bin/"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/libnvvp/"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/libnvvp/"
+      - "C:/Program Files (x86)/Razer Chroma SDK/bin/"
+      - "C:/Program Files/Razer Chroma SDK/bin/"
+      - "C:/Program Files (x86)/Razer/ChromaBroadcast/bin/"
+      - "C:/Program Files/Razer/ChromaBroadcast/bin/"
+      - "C:/Program Files/Microsoft/jdk-11.0.20.8-hotspot/bin/"
+      - "C:/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64_win/compiler/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/ProgramData/chocolatey/bin/"
+      - "C:/Users/geret/AppData/Roaming/nvm/"
+      - "C:/Program Files/nodejs/"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/Scripts/"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/"
+      - "C:/Users/geret/AppData/Roaming/.dotnet/"
+      - "C:/Users/geret/AppData/Local/Microsoft/WindowsApps/"
+      - "C:/Users/geret/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "C:/Users/geret/.dotnet/tools/"
+      - "C:/Users/geret/AppData/Roaming/npm/"
+      - "C:/Users/geret/AppData/Local/Android/Sdk/platform-tools/"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "C:/Windows/System32/config/systemprofile/AppData/Local/Microsoft/WindowsApps/"
+      - "C:/Program Files/Docker/Docker/resources/bin/"
+      - "C:/Program Files/Git LFS/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/"
+      - "C:/Program Files/NVIDIA Corporation/Nsight Compute 2025.2.0/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Program Files/cursor/resources/app/bin/"
+      - "C:/Program Files/GitHub CLI/"
+      - "C:/Program Files/PowerShell/7/"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/Scripts/"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/"
+      - "C:/dev/note-mvp/backend/.venv/Scripts/"
+      - "C:/Users/geret/.local/bin/"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/"
+      - "C:/U/"
+      - "C:/dev/tools/flutter/bin/"
+      - "C:/Program Files/JetBrains/IntelliJ IDEA 2025.2.4/bin/"
+      - "C:/Users/geret/AppData/Local/Pandoc/"
+      - "C:/Users/geret/AppData/Local/Programs/MiKTeX/miktex/bin/x64/"
+      - "C:/Users/geret/AppData/Local/PowerToys/"
+      - "C:/Program Files/Graphviz/bin/"
+      - "C:/Users/geret/AppData/Local/Programs/Ollama/"
+      - "C:/Users/geret/AppData/Local/Microsoft/WinGet/Links/"
+      - "C:/Users/geret/AppData/Roaming/nvm/v25.2.1/"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.20.0/"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.17.1/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/link.com"
+    found: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/link.exe"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Program Files\\Git\\mingw64\\bin"
+        - "C:\\Program Files\\Git\\usr\\bin"
+        - "C:\\Users\\geret\\bin"
+        - "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\libnvvp"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\libnvvp"
+        - "C:\\Program Files (x86)\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files (x86)\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Microsoft\\jdk-11.0.20.8-hotspot\\bin"
+        - "C:\\Program Files (x86)\\Common Files\\Intel\\Shared Libraries\\redist\\intel64_win\\compiler"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\Windows\\System32\\OpenSSH"
+        - "C:\\Program Files\\dotnet"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm"
+        - "C:\\Program Files\\nodejs"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311\\Scripts"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311"
+        - "C:\\Users\\geret\\AppData\\Roaming\\.dotnet"
+        - "C:\\Users\\geret\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Users\\geret\\.dotnet\\tools"
+        - "C:\\Users\\geret\\AppData\\Roaming\\npm"
+        - "C:\\Users\\geret\\AppData\\Local\\Android\\Sdk\\platform-tools"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\WINDOWS\\system32\\config\\systemprofile\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Program Files\\Docker\\Docker\\resources\\bin"
+        - "C:\\Program Files\\Git LFS"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2025.2.0"
+        - "C:\\Program Files\\Git\\cmd"
+        - "C:\\Program Files\\cursor\\resources\\app\\bin"
+        - "C:\\Program Files\\GitHub CLI"
+        - "C:\\Program Files\\PowerShell\\7"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310\\Scripts"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310"
+        - "C:\\dev\\note-mvp\\backend\\.venv\\Scripts"
+        - "C:\\Users\\geret\\.local\\bin"
+        - "C:\\Program Files\\PowerShell\\7"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\libnvvp"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\libnvvp"
+        - "C:\\Program Files (x86)\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files (x86)\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Program Files\\Microsoft\\jdk-11.0.20.8-hotspot\\bin"
+        - "C:\\Program Files (x86)\\Common Files\\Intel\\Shared Libraries\\redist\\intel64_win\\compiler"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\Windows\\System32\\OpenSSH"
+        - "C:\\Program Files\\dotnet"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\Program Files\\Git\\cmd"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "C:\\U"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\dev\\tools\\flutter\\bin"
+        - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.2.4\\bin"
+        - "C:\\Users\\geret\\AppData\\Local\\Pandoc"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\MiKTeX\\miktex\\bin\\x64"
+        - "C:\\Users\\geret\\AppData\\Local\\PowerToys"
+        - "C:\\Program Files\\Graphviz\\bin"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Ollama"
+        - "C:\\Users\\geret\\AppData\\Local\\Microsoft\\WinGet\\Links"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v25.2.1"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v18.20.0"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v18.17.1"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310"
+        - "C:\\Program Files\\Git\\mingw64\\bin"
+      CMAKE_INSTALL_PREFIX: "$<TARGET_FILE_DIR:boulder_ai>"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:37 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:65 (__resolve_tool_path)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:104 (__resolve_linker_path)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "_CMAKE_TOOL_WITH_PATH"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "lld-link"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/"
+      - "C:/Program Files/Git/mingw64/bin/"
+      - "C:/Program Files/Git/usr/bin/"
+      - "C:/Users/geret/bin/"
+      - "C:/Program Files/Common Files/Oracle/Java/javapath/"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/bin/"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/libnvvp/"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/libnvvp/"
+      - "C:/Program Files (x86)/Razer Chroma SDK/bin/"
+      - "C:/Program Files/Razer Chroma SDK/bin/"
+      - "C:/Program Files (x86)/Razer/ChromaBroadcast/bin/"
+      - "C:/Program Files/Razer/ChromaBroadcast/bin/"
+      - "C:/Program Files/Microsoft/jdk-11.0.20.8-hotspot/bin/"
+      - "C:/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64_win/compiler/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/dotnet/"
+      - "C:/ProgramData/chocolatey/bin/"
+      - "C:/Users/geret/AppData/Roaming/nvm/"
+      - "C:/Program Files/nodejs/"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/Scripts/"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/"
+      - "C:/Users/geret/AppData/Roaming/.dotnet/"
+      - "C:/Users/geret/AppData/Local/Microsoft/WindowsApps/"
+      - "C:/Users/geret/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "C:/Users/geret/.dotnet/tools/"
+      - "C:/Users/geret/AppData/Roaming/npm/"
+      - "C:/Users/geret/AppData/Local/Android/Sdk/platform-tools/"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "C:/Windows/System32/config/systemprofile/AppData/Local/Microsoft/WindowsApps/"
+      - "C:/Program Files/Docker/Docker/resources/bin/"
+      - "C:/Program Files/Git LFS/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/"
+      - "C:/Program Files/NVIDIA Corporation/Nsight Compute 2025.2.0/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Program Files/cursor/resources/app/bin/"
+      - "C:/Program Files/GitHub CLI/"
+      - "C:/Program Files/PowerShell/7/"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/Scripts/"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/"
+      - "C:/dev/note-mvp/backend/.venv/Scripts/"
+      - "C:/Users/geret/.local/bin/"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/"
+      - "C:/U/"
+      - "C:/dev/tools/flutter/bin/"
+      - "C:/Program Files/JetBrains/IntelliJ IDEA 2025.2.4/bin/"
+      - "C:/Users/geret/AppData/Local/Pandoc/"
+      - "C:/Users/geret/AppData/Local/Programs/MiKTeX/miktex/bin/x64/"
+      - "C:/Users/geret/AppData/Local/PowerToys/"
+      - "C:/Program Files/Graphviz/bin/"
+      - "C:/Users/geret/AppData/Local/Programs/Ollama/"
+      - "C:/Users/geret/AppData/Local/Microsoft/WinGet/Links/"
+      - "C:/Users/geret/AppData/Roaming/nvm/v25.2.1/"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.20.0/"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.17.1/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/lld-link.com"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/lld-link.exe"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/lld-link"
+      - "C:/Program Files/Git/mingw64/bin/lld-link.com"
+      - "C:/Program Files/Git/mingw64/bin/lld-link.exe"
+      - "C:/Program Files/Git/mingw64/bin/lld-link"
+      - "C:/Program Files/Git/usr/bin/lld-link.com"
+      - "C:/Program Files/Git/usr/bin/lld-link.exe"
+      - "C:/Program Files/Git/usr/bin/lld-link"
+      - "C:/Users/geret/bin/lld-link.com"
+      - "C:/Users/geret/bin/lld-link.exe"
+      - "C:/Users/geret/bin/lld-link"
+      - "C:/Program Files/Common Files/Oracle/Java/javapath/lld-link.com"
+      - "C:/Program Files/Common Files/Oracle/Java/javapath/lld-link.exe"
+      - "C:/Program Files/Common Files/Oracle/Java/javapath/lld-link"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/bin/lld-link.com"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/bin/lld-link.exe"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/bin/lld-link"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/libnvvp/lld-link.com"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/libnvvp/lld-link.exe"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4/libnvvp/lld-link"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/lld-link.com"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/lld-link.exe"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/lld-link"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/libnvvp/lld-link.com"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/libnvvp/lld-link.exe"
+      - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/libnvvp/lld-link"
+      - "C:/Program Files (x86)/Razer Chroma SDK/bin/lld-link.com"
+      - "C:/Program Files (x86)/Razer Chroma SDK/bin/lld-link.exe"
+      - "C:/Program Files (x86)/Razer Chroma SDK/bin/lld-link"
+      - "C:/Program Files/Razer Chroma SDK/bin/lld-link.com"
+      - "C:/Program Files/Razer Chroma SDK/bin/lld-link.exe"
+      - "C:/Program Files/Razer Chroma SDK/bin/lld-link"
+      - "C:/Program Files (x86)/Razer/ChromaBroadcast/bin/lld-link.com"
+      - "C:/Program Files (x86)/Razer/ChromaBroadcast/bin/lld-link.exe"
+      - "C:/Program Files (x86)/Razer/ChromaBroadcast/bin/lld-link"
+      - "C:/Program Files/Razer/ChromaBroadcast/bin/lld-link.com"
+      - "C:/Program Files/Razer/ChromaBroadcast/bin/lld-link.exe"
+      - "C:/Program Files/Razer/ChromaBroadcast/bin/lld-link"
+      - "C:/Program Files/Microsoft/jdk-11.0.20.8-hotspot/bin/lld-link.com"
+      - "C:/Program Files/Microsoft/jdk-11.0.20.8-hotspot/bin/lld-link.exe"
+      - "C:/Program Files/Microsoft/jdk-11.0.20.8-hotspot/bin/lld-link"
+      - "C:/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64_win/compiler/lld-link.com"
+      - "C:/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64_win/compiler/lld-link.exe"
+      - "C:/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64_win/compiler/lld-link"
+      - "C:/Windows/System32/lld-link.com"
+      - "C:/Windows/System32/lld-link.exe"
+      - "C:/Windows/System32/lld-link"
+      - "C:/Windows/lld-link.com"
+      - "C:/Windows/lld-link.exe"
+      - "C:/Windows/lld-link"
+      - "C:/Windows/System32/wbem/lld-link.com"
+      - "C:/Windows/System32/wbem/lld-link.exe"
+      - "C:/Windows/System32/wbem/lld-link"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/lld-link.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/lld-link.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/lld-link"
+      - "C:/Windows/System32/OpenSSH/lld-link.com"
+      - "C:/Windows/System32/OpenSSH/lld-link.exe"
+      - "C:/Windows/System32/OpenSSH/lld-link"
+      - "C:/Program Files/dotnet/lld-link.com"
+      - "C:/Program Files/dotnet/lld-link.exe"
+      - "C:/Program Files/dotnet/lld-link"
+      - "C:/ProgramData/chocolatey/bin/lld-link.com"
+      - "C:/ProgramData/chocolatey/bin/lld-link.exe"
+      - "C:/ProgramData/chocolatey/bin/lld-link"
+      - "C:/Users/geret/AppData/Roaming/nvm/lld-link.com"
+      - "C:/Users/geret/AppData/Roaming/nvm/lld-link.exe"
+      - "C:/Users/geret/AppData/Roaming/nvm/lld-link"
+      - "C:/Program Files/nodejs/lld-link.com"
+      - "C:/Program Files/nodejs/lld-link.exe"
+      - "C:/Program Files/nodejs/lld-link"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/Scripts/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/Scripts/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/Scripts/lld-link"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python311/lld-link"
+      - "C:/Users/geret/AppData/Roaming/.dotnet/lld-link.com"
+      - "C:/Users/geret/AppData/Roaming/.dotnet/lld-link.exe"
+      - "C:/Users/geret/AppData/Roaming/.dotnet/lld-link"
+      - "C:/Users/geret/AppData/Local/Microsoft/WindowsApps/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Microsoft/WindowsApps/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Microsoft/WindowsApps/lld-link"
+      - "C:/Users/geret/AppData/Local/Programs/Microsoft VS Code/bin/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Programs/Microsoft VS Code/bin/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Programs/Microsoft VS Code/bin/lld-link"
+      - "C:/Users/geret/.dotnet/tools/lld-link.com"
+      - "C:/Users/geret/.dotnet/tools/lld-link.exe"
+      - "C:/Users/geret/.dotnet/tools/lld-link"
+      - "C:/Users/geret/AppData/Roaming/npm/lld-link.com"
+      - "C:/Users/geret/AppData/Roaming/npm/lld-link.exe"
+      - "C:/Users/geret/AppData/Roaming/npm/lld-link"
+      - "C:/Users/geret/AppData/Local/Android/Sdk/platform-tools/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Android/Sdk/platform-tools/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Android/Sdk/platform-tools/lld-link"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/lld-link.com"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/lld-link.exe"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/lld-link"
+      - "C:/Windows/System32/config/systemprofile/AppData/Local/Microsoft/WindowsApps/lld-link.com"
+      - "C:/Windows/System32/config/systemprofile/AppData/Local/Microsoft/WindowsApps/lld-link.exe"
+      - "C:/Windows/System32/config/systemprofile/AppData/Local/Microsoft/WindowsApps/lld-link"
+      - "C:/Program Files/Docker/Docker/resources/bin/lld-link.com"
+      - "C:/Program Files/Docker/Docker/resources/bin/lld-link.exe"
+      - "C:/Program Files/Docker/Docker/resources/bin/lld-link"
+      - "C:/Program Files/Git LFS/lld-link.com"
+      - "C:/Program Files/Git LFS/lld-link.exe"
+      - "C:/Program Files/Git LFS/lld-link"
+      - "C:/Program Files/CMake/bin/lld-link.com"
+      - "C:/Program Files/CMake/bin/lld-link.exe"
+      - "C:/Program Files/CMake/bin/lld-link"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/lld-link.com"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/lld-link.exe"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/lld-link"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/lld-link.com"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/lld-link.exe"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/lld-link"
+      - "C:/Program Files/NVIDIA Corporation/Nsight Compute 2025.2.0/lld-link.com"
+      - "C:/Program Files/NVIDIA Corporation/Nsight Compute 2025.2.0/lld-link.exe"
+      - "C:/Program Files/NVIDIA Corporation/Nsight Compute 2025.2.0/lld-link"
+      - "C:/Program Files/Git/cmd/lld-link.com"
+      - "C:/Program Files/Git/cmd/lld-link.exe"
+      - "C:/Program Files/Git/cmd/lld-link"
+      - "C:/Program Files/cursor/resources/app/bin/lld-link.com"
+      - "C:/Program Files/cursor/resources/app/bin/lld-link.exe"
+      - "C:/Program Files/cursor/resources/app/bin/lld-link"
+      - "C:/Program Files/GitHub CLI/lld-link.com"
+      - "C:/Program Files/GitHub CLI/lld-link.exe"
+      - "C:/Program Files/GitHub CLI/lld-link"
+      - "C:/Program Files/PowerShell/7/lld-link.com"
+      - "C:/Program Files/PowerShell/7/lld-link.exe"
+      - "C:/Program Files/PowerShell/7/lld-link"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/Scripts/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/Scripts/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/Scripts/lld-link"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Programs/Python/Python310/lld-link"
+      - "C:/dev/note-mvp/backend/.venv/Scripts/lld-link.com"
+      - "C:/dev/note-mvp/backend/.venv/Scripts/lld-link.exe"
+      - "C:/dev/note-mvp/backend/.venv/Scripts/lld-link"
+      - "C:/Users/geret/.local/bin/lld-link.com"
+      - "C:/Users/geret/.local/bin/lld-link.exe"
+      - "C:/Users/geret/.local/bin/lld-link"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/lld-link.com"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/lld-link.exe"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/lld-link"
+      - "C:/U/lld-link.com"
+      - "C:/U/lld-link.exe"
+      - "C:/U/lld-link"
+      - "C:/dev/tools/flutter/bin/lld-link.com"
+      - "C:/dev/tools/flutter/bin/lld-link.exe"
+      - "C:/dev/tools/flutter/bin/lld-link"
+      - "C:/Program Files/JetBrains/IntelliJ IDEA 2025.2.4/bin/lld-link.com"
+      - "C:/Program Files/JetBrains/IntelliJ IDEA 2025.2.4/bin/lld-link.exe"
+      - "C:/Program Files/JetBrains/IntelliJ IDEA 2025.2.4/bin/lld-link"
+      - "C:/Users/geret/AppData/Local/Pandoc/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Pandoc/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Pandoc/lld-link"
+      - "C:/Users/geret/AppData/Local/Programs/MiKTeX/miktex/bin/x64/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Programs/MiKTeX/miktex/bin/x64/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Programs/MiKTeX/miktex/bin/x64/lld-link"
+      - "C:/Users/geret/AppData/Local/PowerToys/lld-link.com"
+      - "C:/Users/geret/AppData/Local/PowerToys/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/PowerToys/lld-link"
+      - "C:/Program Files/Graphviz/bin/lld-link.com"
+      - "C:/Program Files/Graphviz/bin/lld-link.exe"
+      - "C:/Program Files/Graphviz/bin/lld-link"
+      - "C:/Users/geret/AppData/Local/Programs/Ollama/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Programs/Ollama/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Programs/Ollama/lld-link"
+      - "C:/Users/geret/AppData/Local/Microsoft/WinGet/Links/lld-link.com"
+      - "C:/Users/geret/AppData/Local/Microsoft/WinGet/Links/lld-link.exe"
+      - "C:/Users/geret/AppData/Local/Microsoft/WinGet/Links/lld-link"
+      - "C:/Users/geret/AppData/Roaming/nvm/v25.2.1/lld-link.com"
+      - "C:/Users/geret/AppData/Roaming/nvm/v25.2.1/lld-link.exe"
+      - "C:/Users/geret/AppData/Roaming/nvm/v25.2.1/lld-link"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.20.0/lld-link.com"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.20.0/lld-link.exe"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.20.0/lld-link"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.17.1/lld-link.com"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.17.1/lld-link.exe"
+      - "C:/Users/geret/AppData/Roaming/nvm/v18.17.1/lld-link"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "C:\\Program Files\\Git\\mingw64\\bin"
+        - "C:\\Program Files\\Git\\usr\\bin"
+        - "C:\\Users\\geret\\bin"
+        - "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\libnvvp"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\libnvvp"
+        - "C:\\Program Files (x86)\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files (x86)\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Microsoft\\jdk-11.0.20.8-hotspot\\bin"
+        - "C:\\Program Files (x86)\\Common Files\\Intel\\Shared Libraries\\redist\\intel64_win\\compiler"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\Windows\\System32\\OpenSSH"
+        - "C:\\Program Files\\dotnet"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm"
+        - "C:\\Program Files\\nodejs"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311\\Scripts"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311"
+        - "C:\\Users\\geret\\AppData\\Roaming\\.dotnet"
+        - "C:\\Users\\geret\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Users\\geret\\.dotnet\\tools"
+        - "C:\\Users\\geret\\AppData\\Roaming\\npm"
+        - "C:\\Users\\geret\\AppData\\Local\\Android\\Sdk\\platform-tools"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\WINDOWS\\system32\\config\\systemprofile\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Program Files\\Docker\\Docker\\resources\\bin"
+        - "C:\\Program Files\\Git LFS"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2025.2.0"
+        - "C:\\Program Files\\Git\\cmd"
+        - "C:\\Program Files\\cursor\\resources\\app\\bin"
+        - "C:\\Program Files\\GitHub CLI"
+        - "C:\\Program Files\\PowerShell\\7"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310\\Scripts"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310"
+        - "C:\\dev\\note-mvp\\backend\\.venv\\Scripts"
+        - "C:\\Users\\geret\\.local\\bin"
+        - "C:\\Program Files\\PowerShell\\7"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\libnvvp"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\libnvvp"
+        - "C:\\Program Files (x86)\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files\\Razer Chroma SDK\\bin"
+        - "C:\\Program Files (x86)\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Razer\\ChromaBroadcast\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Program Files\\Microsoft\\jdk-11.0.20.8-hotspot\\bin"
+        - "C:\\Program Files (x86)\\Common Files\\Intel\\Shared Libraries\\redist\\intel64_win\\compiler"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\Windows\\System32\\OpenSSH"
+        - "C:\\Program Files\\dotnet"
+        - "C:\\WINDOWS\\system32"
+        - "C:\\WINDOWS"
+        - "C:\\WINDOWS\\System32\\Wbem"
+        - "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+        - "C:\\WINDOWS\\System32\\OpenSSH"
+        - "C:\\Program Files\\Git\\cmd"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "C:\\U"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\dev\\tools\\flutter\\bin"
+        - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.2.4\\bin"
+        - "C:\\Users\\geret\\AppData\\Local\\Pandoc"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\MiKTeX\\miktex\\bin\\x64"
+        - "C:\\Users\\geret\\AppData\\Local\\PowerToys"
+        - "C:\\Program Files\\Graphviz\\bin"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Ollama"
+        - "C:\\Users\\geret\\AppData\\Local\\Microsoft\\WinGet\\Links"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v25.2.1"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v18.20.0"
+        - "C:\\Users\\geret\\AppData\\Roaming\\nvm\\v18.17.1"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python311"
+        - "C:\\Users\\geret\\AppData\\Local\\Programs\\Python\\Python310"
+        - "C:\\Program Files\\Git\\mingw64\\bin"
+      CMAKE_INSTALL_PREFIX: "$<TARGET_FILE_DIR:boulder_ai>"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-ht39s0"
+      binary: "C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-ht39s0"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-ht39s0'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_18419.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild-Version 17.14.51+25f168cee f├╝r .NET Framework
+        Der Buildvorgang wurde am 25.08.2026 18:09:35 gestartet.
+        
+        Projekt "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-ht39s0\\cmTC_18419.vcxproj" auf Knoten "1" (Standardziele).
+        PrepareForBuild:
+          Das Verzeichnis "cmTC_18419.dir\\Debug\\" wird erstellt.
+          Die strukturierte Ausgabe ist aktiviert. Die Formatierung der Compilerdiagnose spiegelt die Fehlerhierarchie wider. Weitere Informationen finden Sie unter https://aka.ms/cpp/structured-output.
+          Das Verzeichnis "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-ht39s0\\Debug\\" wird erstellt.
+          Das Verzeichnis "cmTC_18419.dir\\Debug\\cmTC_18419.tlog\\" wird erstellt.
+        InitializeBuildStatus:
+          "cmTC_18419.dir\\Debug\\cmTC_18419.tlog\\unsuccessfulbuild" wird erstellt, da "AlwaysCreate" angegeben wurde.
+          Aktualisieren des Timestamps von "cmTC_18419.dir\\Debug\\cmTC_18419.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_18419.dir\\Debug\\\\" /Fd"cmTC_18419.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft (R) C/C++-Optimierungscompiler Version 19.44.35228 f├╝r x64
+          Copyright (C) Microsoft Corporation. Alle Rechte vorbehalten.
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_18419.dir\\Debug\\\\" /Fd"cmTC_18419.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
+          CMakeCXXCompilerABI.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-ht39s0\\Debug\\cmTC_18419.exe" /INCREMENTAL /ILK:"cmTC_18419.dir\\Debug\\cmTC_18419.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-ht39s0/Debug/cmTC_18419.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/dev/boulder_ai/app/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-ht39s0/Debug/cmTC_18419.lib" /MACHINE:X64  /machine:x64 cmTC_18419.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_18419.vcxproj -> C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-ht39s0\\Debug\\cmTC_18419.exe
+        FinalizeBuildStatus:
+          Die Datei "cmTC_18419.dir\\Debug\\cmTC_18419.tlog\\unsuccessfulbuild" wird gel├Âscht.
+          Aktualisieren des Timestamps von "cmTC_18419.dir\\Debug\\cmTC_18419.tlog\\cmTC_18419.lastbuildstate".
+        Die Erstellung von Projekt "C:\\dev\\boulder_ai\\app\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-ht39s0\\cmTC_18419.vcxproj" ist abgeschlossen (Standardziele).
+        
+        Der Buildvorgang wurde erfolgreich ausgef├╝hrt.
+            0 Warnung(en)
+            0 Fehler
+        
+        Verstrichene Zeit 00:00:00.36
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'CXX': C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/Internal/CMakeDetermineLinkerId.cmake:36 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Running the CXX compiler's linker: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.44.35228.0
       Copyright (C) Microsoft Corporation.  All rights reserved.
 ...

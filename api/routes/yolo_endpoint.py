@@ -10,9 +10,12 @@ from PIL import Image
 
 from extensions import db
 from models.models import Analysis
+from vision.beta_planner import plan_beta
 from vision.classes import DETECTION_CLASSES
 from vision.color_extraction import extract_color
 from vision.route_grouping import group_routes
+from vision.video_masks import candidate_from_mask, volume_mask_candidates
+from vision.video_tracking import crop_sharpness
 
 yolo_bp = Blueprint("yolo_bp", __name__)
 
@@ -43,33 +46,72 @@ def _get_sam():
     if os.getenv("USE_SAM", "1") != "1":
         return None
     if "sam" not in _models:
+        import torch
         from ultralytics import SAM
 
-        _models["sam"] = SAM(os.getenv("SAM_WEIGHTS", "sam2.1_b.pt"))
+        # ohne GPU das tiny-Modell: liefert auf CPU Masken in ~1s statt
+        # zweistelliger Sekunden, Qualitätsunterschied für Griffe minimal
+        default_weights = "sam2.1_b.pt" if torch.cuda.is_available() else "sam2.1_t.pt"
+        _models["sam"] = SAM(os.getenv("SAM_WEIGHTS", default_weights))
     return _models["sam"]
 
 
-def _segment(img_rgb, detections):
-    """SAM-Masken je Bounding Box als Polygon an die Detektionen hängen."""
+def _segment(img_rgb, img_bgr, detections):
+    """Beste qualitaetsgepruefte Maske je Detektion anhaengen.
+
+    SAM und die Volume-Hintergrundsubtraktion laufen durch dieselben Gates
+    wie im Video. Rechteckige Wandmasken werden damit auch bei Fotos nicht
+    mehr ungeprueft als Objektkontur ausgegeben.
+    """
     sam = _get_sam()
     if sam is None or not detections:
         return
     bboxes = [det["bbox"] for det in detections]
     results = sam.predict(source=img_rgb, bboxes=bboxes, verbose=False)
     masks = getattr(results[0], "masks", None)
-    if masks is None:
-        return
-    # zip statt Laufindex: liefert SAM weniger Masken als Boxen, bleiben die
-    # restlichen Detektionen einfach ohne Segmentierung statt zu crashen.
-    for det, mask in zip(detections, masks):
-        mask_np = np.asarray(mask.data.cpu().numpy()).squeeze()
-        mask_uint8 = (mask_np > 0.5).astype(np.uint8) * 255
-        contours, _ = cv2.findContours(
-            mask_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
-        if contours:
-            contour = max(contours, key=cv2.contourArea).reshape(-1, 2)
-            det["segmentation"] = contour.tolist()
+    mask_list = list(masks) if masks is not None else []
+    for index, det in enumerate(detections):
+        class_id = 1 if det["det_class"] == "volume" else 0
+        sharpness = crop_sharpness(img_bgr, det["bbox"])
+        candidates = []
+        if index < len(mask_list):
+            mask_np = np.asarray(mask_list[index].data.cpu().numpy()).squeeze()
+            if mask_np.shape != img_bgr.shape[:2]:
+                mask_np = cv2.resize(
+                    mask_np.astype(np.float32),
+                    (img_bgr.shape[1], img_bgr.shape[0]),
+                    interpolation=cv2.INTER_NEAREST,
+                )
+            candidates.append(
+                candidate_from_mask(
+                    img_bgr,
+                    det["bbox"],
+                    mask_np > 0.5,
+                    class_id=class_id,
+                    source="sam",
+                    confidence=det["confidence"],
+                    sharpness=sharpness,
+                )
+            )
+        if class_id == 1:
+            candidates.extend(
+                volume_mask_candidates(
+                    img_bgr,
+                    det["bbox"],
+                    confidence=det["confidence"],
+                    sharpness=sharpness,
+                )
+            )
+        accepted = [candidate for candidate in candidates if candidate.accepted]
+        if not accepted:
+            continue
+        best = max(accepted, key=lambda candidate: candidate.score)
+        det["segmentation"] = best.polygon.astype(int).tolist()
+        det["segmentation_source"] = best.source
+        det["segmentation_quality"] = {
+            "score": round(float(best.score), 3),
+            **best.metrics,
+        }
 
 
 @yolo_bp.route("/process", methods=["POST"])
@@ -111,7 +153,7 @@ def process_image():
                 }
             )
 
-    _segment(img, detections)
+    _segment(img, img_bgr, detections)
 
     # Farbe aus den Pixeln bestimmen. class/class_name bleiben als Aliase auf
     # die Farbe erhalten, damit ältere App-Stände weiter funktionieren.
@@ -126,11 +168,15 @@ def process_image():
 
     height, width = img_bgr.shape[:2]
     routes = group_routes(detections, width, height)
+    # Zugvorschlag je Route; Index parallel zur routes-Liste, "hold" ist der
+    # Index innerhalb der jeweiligen Route
+    betas = [plan_beta(route, image_height=height) for route in routes]
 
     response = {
         "original_image": orig_base64,
         "detections": detections,
         "routes": routes,
+        "betas": betas,
         "image_width": width,
         "image_height": height,
     }

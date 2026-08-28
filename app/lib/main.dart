@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'screens/home_screen.dart';
 import 'screens/result_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/video_screen.dart';
 
 void main() {
   runApp(const BoulderAi());
@@ -30,6 +33,17 @@ class BoulderAi extends StatelessWidget {
             return const HomeScreen();
           }
           return ResultScreen(processedResult: args);
+        },
+        '/video': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+          if (args == null || args is! Map<String, dynamic>) {
+            return const HomeScreen();
+          }
+          return VideoScreen(
+            videoPath: args['videoPath'] as String?,
+            videoBytes: args['videoBytes'] as Uint8List?,
+            filename: args['filename'] as String? ?? 'video.mp4',
+          );
         },
       },
     );

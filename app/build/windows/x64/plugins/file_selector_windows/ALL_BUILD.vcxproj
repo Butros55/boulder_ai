@@ -21,9 +21,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0826B5B5-B801-3A7C-9FF3-6DA5B4FDEF91}</ProjectGuid>
+    <ProjectGuid>{27B49175-CB17-3AE5-B5BD-9B65EB5A080B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
     <Platform>x64</Platform>
     <ProjectName>ALL_BUILD</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
@@ -88,11 +88,11 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\dev\projects\boulder_ai\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\CMakeLists.txt">
+    <CustomBuild Include="C:\dev\boulder_ai\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/dev/projects/boulder_ai/app/windows/flutter/ephemeral/.plugin_symlinks/file_selector_windows/windows/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/dev/boulder_ai/app/windows/flutter/ephemeral/.plugin_symlinks/file_selector_windows/windows/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/projects/boulder_ai/app/windows -BC:/dev/projects/boulder_ai/app/build/windows/x64 --check-stamp-file C:/dev/projects/boulder_ai/app/build/windows/x64/plugins/file_selector_windows/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/boulder_ai/app/windows -BC:/dev/boulder_ai/app/build/windows/x64 --check-stamp-file C:/dev/boulder_ai/app/build/windows/x64/plugins/file_selector_windows/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -101,11 +101,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\projects\boulder_ai\app\build\windows\x64\plugins\file_selector_windows\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\boulder_ai\app\build\windows\x64\plugins\file_selector_windows\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Building Custom Rule C:/dev/projects/boulder_ai/app/windows/flutter/ephemeral/.plugin_symlinks/file_selector_windows/windows/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Building Custom Rule C:/dev/boulder_ai/app/windows/flutter/ephemeral/.plugin_symlinks/file_selector_windows/windows/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/projects/boulder_ai/app/windows -BC:/dev/projects/boulder_ai/app/build/windows/x64 --check-stamp-file C:/dev/projects/boulder_ai/app/build/windows/x64/plugins/file_selector_windows/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/boulder_ai/app/windows -BC:/dev/boulder_ai/app/build/windows/x64 --check-stamp-file C:/dev/boulder_ai/app/build/windows/x64/plugins/file_selector_windows/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -114,11 +114,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">C:\dev\projects\boulder_ai\app\build\windows\x64\plugins\file_selector_windows\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">C:\dev\boulder_ai\app\build\windows\x64\plugins\file_selector_windows\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/dev/projects/boulder_ai/app/windows/flutter/ephemeral/.plugin_symlinks/file_selector_windows/windows/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/dev/boulder_ai/app/windows/flutter/ephemeral/.plugin_symlinks/file_selector_windows/windows/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/projects/boulder_ai/app/windows -BC:/dev/projects/boulder_ai/app/build/windows/x64 --check-stamp-file C:/dev/projects/boulder_ai/app/build/windows/x64/plugins/file_selector_windows/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/dev/boulder_ai/app/windows -BC:/dev/boulder_ai/app/build/windows/x64 --check-stamp-file C:/dev/boulder_ai/app/build/windows/x64/plugins/file_selector_windows/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -127,21 +127,22 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\dev\projects\boulder_ai\app\build\windows\x64\plugins\file_selector_windows\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\dev\boulder_ai\app\build\windows\x64\plugins\file_selector_windows\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="C:\dev\projects\boulder_ai\app\build\windows\x64\ZERO_CHECK.vcxproj">
-      <Project>{16423FF9-1F99-35E5-AAD6-2597F414782A}</Project>
+    <ProjectReference Include="C:\dev\boulder_ai\app\build\windows\x64\ZERO_CHECK.vcxproj">
+      <Project>{CF40B5D9-9606-3A79-A688-B36FFE969001}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="C:\dev\projects\boulder_ai\app\build\windows\x64\plugins\file_selector_windows\file_selector_windows_plugin.vcxproj">
-      <Project>{718353E9-0E00-3443-8316-72B074165536}</Project>
+    <ProjectReference Include="C:\dev\boulder_ai\app\build\windows\x64\plugins\file_selector_windows\file_selector_windows_plugin.vcxproj">
+      <Project>{E240ACBC-731F-3C19-8530-7B88E5A08B93}</Project>
       <Name>file_selector_windows_plugin</Name>
     </ProjectReference>
   </ItemGroup>

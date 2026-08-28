@@ -1,0 +1,13 @@
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/icudtl.dat
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/flutter_windows.dll
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/file_selector_windows_plugin.dll
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/flutter_secure_storage_windows_plugin.dll
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.bin
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.json
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/FontManifest.json
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/kernel_blob.bin
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/NativeAssetsManifest.json
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/NOTICES.Z
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+C:/dev/boulder_ai/app/build/windows/x64/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag

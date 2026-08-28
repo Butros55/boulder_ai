@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\dev\projects\boulder_ai\app\build\windows\x64\CMakeFiles\964e5fb8f6979398738dd007fd3fd477\INSTALL_force.rule">
+    <CustomBuild Include="C:\dev\boulder_ai\app\build\windows\x64\CMakeFiles\fa6a519988a3994eb522902580a2f71f\INSTALL_force.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{67916496-C798-3A85-A6CD-22F2E08F3172}</UniqueIdentifier>
+      <UniqueIdentifier>{CAA50FFA-F7C2-334F-AA7E-98BDFD2871B3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

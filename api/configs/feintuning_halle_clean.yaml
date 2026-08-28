@@ -1,0 +1,15 @@
+# Leakfreier Fine-Tuning-Mix. Der laufende Alt-Lauf verwendet noch
+# datasets/feintuning_halle.yaml und wird von dieser Datei nicht beeinflusst.
+path: C:/dev/boulder_ai/api/datasets
+train:
+  - merged_clean/train/images
+  - eigene_halle_clean/train/images
+  - eigene_halle_clean/train/images
+  - eigene_halle_clean/train/images
+# Train-time-Metrik bleibt extern und vollstaendig menschlich gelabelt.
+# Die eigene Halle wird separat und vorerst hold-only mit
+# scripts/validate_weights.py ausgewertet.
+val: merged_clean/valid/images
+test: merged_clean/test/images
+nc: 2
+names: [hold, volume]

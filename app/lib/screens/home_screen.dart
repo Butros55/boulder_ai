@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:boulder_ai/util/image_processor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -83,6 +84,79 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _deleteAnalysis(dynamic analysisId) async {
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xFF2C2C2E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Analyse löschen?', style: TextStyle(color: Colors.white)),
+        content: const Text(
+          'Die Analyse wird dauerhaft entfernt.',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Abbrechen', style: TextStyle(color: Colors.white70)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Löschen', style: TextStyle(color: Colors.redAccent)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      final token = await getToken();
+      if (token == null) {
+        if (!mounted) return;
+        _showLogoutError();
+        _logout();
+        return;
+      }
+      final response = await http.delete(
+        Uri.parse("http://127.0.0.1:5000/analyses/$analysisId"),
+        headers: {"Authorization": "Bearer $token"},
+      );
+      if (!mounted) return;
+      if (response.statusCode == 200) {
+        setState(() {
+          _recentAnalyses.removeWhere((a) => a['id'] == analysisId);
+          if (_totalAnalyses > 0) {
+            _totalAnalyses--;
+          }
+        });
+      } else if (response.statusCode == 401) {
+        _showLogoutError();
+        _logout();
+      } else {
+        _showDeleteError();
+      }
+    } catch (e) {
+      debugPrint('Fehler beim Löschen der Analyse: $e');
+      if (!mounted) return;
+      _showDeleteError();
+    }
+  }
+
+  void _showDeleteError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Analyse konnte nicht gelöscht werden.",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
   Future<void> _takePicture() async {
     try {
       final XFile? picture = await _picker.pickImage(
@@ -135,6 +209,60 @@ class HomeScreenState extends State<HomeScreen> {
       debugPrint('Fehler beim Auswählen eines Bildes: $e');
       setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _pickVideo() async {
+    try {
+      final XFile? pickedFile = await _picker.pickVideo(
+        source: ImageSource.gallery,
+      );
+      if (pickedFile == null) return;
+
+      final Map<String, dynamic> args;
+      if (kIsWeb) {
+        final bytes = await pickedFile.readAsBytes();
+        args = {'videoBytes': bytes, 'filename': pickedFile.name};
+      } else {
+        args = {'videoPath': pickedFile.path, 'filename': pickedFile.name};
+      }
+      if (!mounted) return;
+      Navigator.pushNamed(
+        context,
+        '/video',
+        arguments: args,
+      ).then((_) => _fetchTotalAnalyses());
+    } on MissingPluginException {
+      _showVideoPickerUnsupported();
+    } on UnimplementedError {
+      _showVideoPickerUnsupported();
+    } catch (e) {
+      debugPrint('Fehler beim Auswählen eines Videos: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Das Video konnte nicht ausgewählt werden.",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  void _showVideoPickerUnsupported() {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Die Videoauswahl wird auf dieser Plattform nicht unterstützt.",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -203,7 +331,7 @@ class HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 24),
 
                   Text(
-                    'Willkommen! \nErkenne Boulder-Griffe per Foto oder Bild-Upload.',
+                    'Willkommen! \nErkenne Boulder-Griffe per Foto, Bild-Upload oder Video.',
                     style: TextStyle(
                       color: textColor.withValues(alpha: 0.8),
                       fontSize: 16,
@@ -296,6 +424,17 @@ class HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            width: double.infinity,
+                            child: _buildOptionButton(
+                              label: 'Video analysieren',
+                              icon: Icons.videocam_rounded,
+                              onTap: _pickVideo,
+                              accentColor: accentColor,
+                              textColor: textColor,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -368,17 +507,44 @@ class HomeScreenState extends State<HomeScreen> {
                 elevation: 2,
                 child: Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
-                      ),
-                      child: Image.memory(
-                        bytes,
-                        width: 250,
-                        height: 350,
-                        fit: BoxFit.cover,
-                      ),
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12),
+                          ),
+                          child: Image.memory(
+                            bytes,
+                            width: 250,
+                            height: 350,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          child: Tooltip(
+                            message: 'Analyse löschen',
+                            child: Material(
+                              color: Colors.black.withValues(alpha: 0.45),
+                              borderRadius: BorderRadius.circular(8),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () => _deleteAnalysis(analysis['id']),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.delete_outline,
+                                    size: 18,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
                     Padding(
@@ -453,6 +619,9 @@ class HomeScreenState extends State<HomeScreen> {
                               "original_image": analysis['original_image'],
                               "detections": analysis['detections'],
                               "routes": analysis['routes'],
+                              // Ältere Analysen haben kein betas-Feld; null
+                              // wird beim Parsen toleriert.
+                              "betas": analysis['betas'],
                               "image_width": analysis['image_width'] ?? 800,
                               "image_height": analysis['image_height'] ?? 600,
                             },

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "description": "Drei feste Hallenclips fuer Video-Regressionen. Annotationen liegen im erzeugten Manifest, nie in dieser Quellenliste.",
+  "clips": [
+    {
+      "id": "mov888",
+      "path": "app/Boulder data/IMG_0888.MOV",
+      "sample_count": 18,
+      "include_frames": []
+    },
+    {
+      "id": "mov890",
+      "path": "app/Boulder data/IMG_0890.MOV",
+      "sample_count": 18,
+      "include_frames": [100, 192, 210, 234, 240]
+    },
+    {
+      "id": "mov892",
+      "path": "app/Boulder data/IMG_0892.MOV",
+      "sample_count": 18,
+      "include_frames": []
+    }
+  ]
+}
